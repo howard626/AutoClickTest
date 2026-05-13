@@ -1,4 +1,4 @@
-﻿
+
 namespace AutoClickTest
 {
     partial class AutoClick
@@ -39,8 +39,9 @@ namespace AutoClickTest
             this.X = new System.Windows.Forms.Label();
             this.Y = new System.Windows.Forms.Label();
             this.PointX = new System.Windows.Forms.TextBox();
-            this.ActionList = new System.Windows.Forms.TreeView();
+            this.ActionListPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.Clear = new System.Windows.Forms.Button();
+            this.ActionBlocksPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
             // 
             // Add
@@ -57,7 +58,7 @@ namespace AutoClickTest
             // txtResult
             // 
             this.txtResult.AutoSize = true;
-            this.txtResult.Location = new System.Drawing.Point(841, 52);
+            this.txtResult.Location = new System.Drawing.Point(1200, 52);
             this.txtResult.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.txtResult.Name = "txtResult";
             this.txtResult.Size = new System.Drawing.Size(37, 19);
@@ -88,7 +89,7 @@ namespace AutoClickTest
             // 
             // Test
             // 
-            this.Test.Location = new System.Drawing.Point(841, 128);
+            this.Test.Location = new System.Drawing.Point(1200, 128);
             this.Test.Margin = new System.Windows.Forms.Padding(4);
             this.Test.Name = "Test";
             this.Test.Size = new System.Drawing.Size(120, 29);
@@ -99,7 +100,7 @@ namespace AutoClickTest
             // 
             // MoveMouse
             // 
-            this.MoveMouse.Location = new System.Drawing.Point(841, 257);
+            this.MoveMouse.Location = new System.Drawing.Point(1200, 257);
             this.MoveMouse.Margin = new System.Windows.Forms.Padding(4);
             this.MoveMouse.Name = "MoveMouse";
             this.MoveMouse.Size = new System.Drawing.Size(120, 29);
@@ -110,7 +111,7 @@ namespace AutoClickTest
             // 
             // PointY
             // 
-            this.PointY.Location = new System.Drawing.Point(887, 220);
+            this.PointY.Location = new System.Drawing.Point(1250, 220);
             this.PointY.Margin = new System.Windows.Forms.Padding(4);
             this.PointY.Name = "PointY";
             this.PointY.Size = new System.Drawing.Size(72, 27);
@@ -119,7 +120,7 @@ namespace AutoClickTest
             // X
             // 
             this.X.AutoSize = true;
-            this.X.Location = new System.Drawing.Point(841, 180);
+            this.X.Location = new System.Drawing.Point(1200, 180);
             this.X.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.X.Name = "X";
             this.X.Size = new System.Drawing.Size(19, 19);
@@ -129,7 +130,7 @@ namespace AutoClickTest
             // Y
             // 
             this.Y.AutoSize = true;
-            this.Y.Location = new System.Drawing.Point(841, 224);
+            this.Y.Location = new System.Drawing.Point(1200, 224);
             this.Y.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.Y.Name = "Y";
             this.Y.Size = new System.Drawing.Size(18, 19);
@@ -138,18 +139,25 @@ namespace AutoClickTest
             // 
             // PointX
             // 
-            this.PointX.Location = new System.Drawing.Point(887, 176);
+            this.PointX.Location = new System.Drawing.Point(1250, 176);
             this.PointX.Margin = new System.Windows.Forms.Padding(4);
             this.PointX.Name = "PointX";
             this.PointX.Size = new System.Drawing.Size(72, 27);
             this.PointX.TabIndex = 10;
             // 
-            // ActionList
+            // ActionListPanel
             // 
-            this.ActionList.Location = new System.Drawing.Point(15, 52);
-            this.ActionList.Name = "ActionList";
-            this.ActionList.Size = new System.Drawing.Size(779, 432);
-            this.ActionList.TabIndex = 11;
+            this.ActionListPanel.AllowDrop = true;
+            this.ActionListPanel.AutoScroll = true;
+            this.ActionListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ActionListPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.ActionListPanel.Location = new System.Drawing.Point(580, 52);
+            this.ActionListPanel.Name = "ActionListPanel";
+            this.ActionListPanel.Size = new System.Drawing.Size(600, 432);
+            this.ActionListPanel.TabIndex = 11;
+            this.ActionListPanel.WrapContents = false;
+            this.ActionListPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.ActionList_DragDrop);
+            this.ActionListPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.ActionList_DragEnter);
             // 
             // Clear
             // 
@@ -161,13 +169,23 @@ namespace AutoClickTest
             this.Clear.UseVisualStyleBackColor = true;
             this.Clear.Click += new System.EventHandler(this.Clear_Click);
             // 
+            // ActionBlocksPanel
+            // 
+            this.ActionBlocksPanel.Location = new System.Drawing.Point(15, 52);
+            this.ActionBlocksPanel.Name = "ActionBlocksPanel";
+            this.ActionBlocksPanel.Size = new System.Drawing.Size(550, 432);
+            this.ActionBlocksPanel.TabIndex = 13;
+            this.ActionBlocksPanel.WrapContents = false;
+            this.ActionBlocksPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            // 
             // AutoClick
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1029, 570);
+            this.ClientSize = new System.Drawing.Size(1350, 650);
+            this.Controls.Add(this.ActionBlocksPanel);
             this.Controls.Add(this.Clear);
-            this.Controls.Add(this.ActionList);
+            this.Controls.Add(this.ActionListPanel);
             this.Controls.Add(this.PointX);
             this.Controls.Add(this.Y);
             this.Controls.Add(this.X);
@@ -199,8 +217,9 @@ namespace AutoClickTest
         private System.Windows.Forms.Label X;
         private System.Windows.Forms.Label Y;
         private System.Windows.Forms.TextBox PointX;
-        private System.Windows.Forms.TreeView ActionList;
+        private System.Windows.Forms.FlowLayoutPanel ActionListPanel;
         private System.Windows.Forms.Button Clear;
+        private System.Windows.Forms.FlowLayoutPanel ActionBlocksPanel;
     }
 
     

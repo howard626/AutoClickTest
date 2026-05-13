@@ -1,4 +1,4 @@
-﻿
+
 namespace AutoClickTest
 {
     partial class AddForm
@@ -46,6 +46,9 @@ namespace AutoClickTest
             this.DelayLabel = new System.Windows.Forms.Label();
             this.MouseWheel = new System.Windows.Forms.TextBox();
             this.MouseWheelLabel = new System.Windows.Forms.Label();
+            this.HoldDuration = new System.Windows.Forms.TextBox();
+            this.HoldLabel = new System.Windows.Forms.Label();
+            this.HoldUnit = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Tool
@@ -200,11 +203,39 @@ namespace AutoClickTest
             this.MouseWheelLabel.TabIndex = 16;
             this.MouseWheelLabel.Text = "次";
             // 
+            // HoldDuration
+            // 
+            this.HoldDuration.Location = new System.Drawing.Point(380, 73);
+            this.HoldDuration.Name = "HoldDuration";
+            this.HoldDuration.Size = new System.Drawing.Size(70, 27);
+            this.HoldDuration.TabIndex = 17;
+            // 
+            // HoldLabel
+            // 
+            this.HoldLabel.AutoSize = true;
+            this.HoldLabel.Location = new System.Drawing.Point(335, 77);
+            this.HoldLabel.Name = "HoldLabel";
+            this.HoldLabel.Size = new System.Drawing.Size(39, 19);
+            this.HoldLabel.TabIndex = 18;
+            this.HoldLabel.Text = "按住";
+            // 
+            // HoldUnit
+            // 
+            this.HoldUnit.AutoSize = true;
+            this.HoldUnit.Location = new System.Drawing.Point(455, 77);
+            this.HoldUnit.Name = "HoldUnit";
+            this.HoldUnit.Size = new System.Drawing.Size(39, 19);
+            this.HoldUnit.TabIndex = 19;
+            this.HoldUnit.Text = "毫秒";
+            // 
             // AddForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(716, 162);
+            this.Controls.Add(this.HoldUnit);
+            this.Controls.Add(this.HoldLabel);
+            this.Controls.Add(this.HoldDuration);
             this.Controls.Add(this.MouseWheelLabel);
             this.Controls.Add(this.MouseWheel);
             this.Controls.Add(this.DelayLabel);
@@ -248,5 +279,8 @@ namespace AutoClickTest
         private System.Windows.Forms.Label DelayLabel;
         private System.Windows.Forms.TextBox MouseWheel;
         private System.Windows.Forms.Label MouseWheelLabel;
+        private System.Windows.Forms.TextBox HoldDuration;
+        private System.Windows.Forms.Label HoldLabel;
+        private System.Windows.Forms.Label HoldUnit;
     }
 }

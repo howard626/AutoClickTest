@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -39,6 +39,11 @@ namespace AutoClickTest
         /// 鍵盤事件參數
         /// </summary>
         public string KeyCode { get; set; }
+
+        /// <summary>
+        /// 按住毫秒
+        /// </summary>
+        public int Hold_MS { get; set; }
     }
 
     /// <summary>
@@ -64,6 +69,17 @@ namespace AutoClickTest
         滑鼠點一下右鍵 = 3,
         滑鼠點一下中鍵 = 4,
         滑鼠前滾 = 5,
-        滑鼠後滾 = 6
+        滑鼠後滾 = 6,
+        鍵盤按住 = 7,
+        滑鼠圖案比對 = 8
+    }
+
+    public class ImageAction : MouseAction
+    {
+        public string ImagePath { get; set; }
+        public System.Drawing.Rectangle SearchRegion { get; set; }
+        public double Threshold { get; set; } = 0.9;
+        public string MatchActionType { get; set; } = "左鍵點擊";
+        public string KeyCode { get; set; } = "";
     }
 }

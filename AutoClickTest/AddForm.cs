@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -32,6 +32,8 @@ namespace AutoClickTest
             Cancel.DialogResult = DialogResult.Cancel;
             Init();
             Action = action;
+            Tool.Text = "滑鼠";
+            ActionName.Text = Action.Action_Desc;
             switch (Action.Action_Desc)
             {
                 case "點一下左鍵":
@@ -39,10 +41,13 @@ namespace AutoClickTest
                 case "點一下右鍵":
                 case "點一下中鍵":
                     ShowMouseClick();
+                    MousePointX.Text = action.X.ToString();
+                    MousePointY.Text = action.Y.ToString();
                     break;
                 case "前滾":
                 case "後滾":
                     ShowMouseRoll();
+                    MouseWheel.Text = action.X.ToString();
                     break;
             }
         }
@@ -57,7 +62,30 @@ namespace AutoClickTest
             Cancel.DialogResult = DialogResult.Cancel;
             Init();
             Action = action;
+            Tool.Text = "鍵盤";
+            ActionName.Text = Action.Action_Desc;
+            KeyCode.Text = action.KeyCode;
+            if (Action.Action_Desc == "按住")
+            {
+                HoldDuration.Text = action.Hold_MS.ToString();
+                ShowHold();
+            }
+            else
+            {
+                HideHold();
+            }
             ShowKeyCode();
+        }
+
+        public AddForm(ImageAction action)
+        {
+            InitializeComponent();
+            Ok.DialogResult = DialogResult.OK;
+            Cancel.DialogResult = DialogResult.Cancel;
+            Init();
+            Action = action;
+            Tool.Text = "圖案比對";
+            ActionName.Text = "圖案比對";
         }
 
 
@@ -71,9 +99,11 @@ namespace AutoClickTest
             {
                 Tool.Items.Insert(0, "鍵盤");
                 Tool.Items.Insert(1, "滑鼠");
+                Tool.Items.Insert(2, "圖案比對");
             }
             HideMouse();
             HideKeyCode();
+            HideHold();
         }
 
         /// <summary>
@@ -93,6 +123,7 @@ namespace AutoClickTest
                 case "鍵盤":
                     ActionName.Items.Clear();
                     ActionName.Items.Add("按一下");
+                    ActionName.Items.Add("按住");
                     HideMouse();
                     ShowKeyCode();
                     break;
@@ -106,6 +137,12 @@ namespace AutoClickTest
                     ActionName.Items.Add("後滾");
                     HideKeyCode();
                     ShowMouseClick();
+                    break;
+                case "圖案比對":
+                    ActionName.Items.Clear();
+                    ActionName.Items.Add("圖案比對");
+                    HideKeyCode();
+                    HideMouse();
                     break;
                 default:
                     break;
@@ -127,7 +164,8 @@ namespace AutoClickTest
                     Tool_Name = "鍵盤",
                     Action_Desc = ActionName.Text,
                     Delay_MS = Int32.Parse(CheckStringToInt(Delay.Text)),
-                    KeyCode = KeyCode.Text
+                    KeyCode = KeyCode.Text,
+                    Hold_MS = ActionName.Text == "按住" ? Int32.Parse(CheckStringToInt(HoldDuration.Text)) : 0
                 };
             }
             else {
@@ -249,6 +287,26 @@ namespace AutoClickTest
         }
 
         /// <summary>
+        /// 顯示按住相關物件
+        /// </summary>
+        private void ShowHold()
+        {
+            HoldDuration.Visible = true;
+            HoldLabel.Visible = true;
+            HoldUnit.Visible = true;
+        }
+
+        /// <summary>
+        /// 隱藏按住相關物件
+        /// </summary>
+        private void HideHold()
+        {
+            HoldDuration.Visible = false;
+            HoldLabel.Visible = false;
+            HoldUnit.Visible = false;
+        }
+
+        /// <summary>
         /// 顯示滑鼠點擊相關物件
         /// </summary>
         private void ShowMouseClick()
@@ -317,8 +375,16 @@ namespace AutoClickTest
         /// <param name="e"></param>
         private void ActionName_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (Tool.Text == "滑鼠")
+            if (Tool.Text == "鍵盤")
             {
+                if (ActionName.Text == "按住")
+                    ShowHold();
+                else
+                    HideHold();
+            }
+            else if (Tool.Text == "滑鼠")
+            {
+                HideHold();
                 switch (ActionName.Text)
                 {
                     case "點一下左鍵":

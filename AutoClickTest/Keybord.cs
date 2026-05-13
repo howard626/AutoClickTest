@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -45,33 +45,17 @@ namespace AutoClickTest
         /// <param name="ms">按住毫秒</param>
         public static void Hold(string key, int ms)
         {
-            CancellationTokenSource s_cts = new CancellationTokenSource();
-            try
+            if (Enum.TryParse(key, true, out Keys virtualKey))
             {
-                s_cts.CancelAfter(ms);
+                byte vk = (byte)virtualKey;
+                // 按下
+                keybd_event(vk, 0, (int)KeyEvent.按下, 0);
+                
+                // 等待
+                Thread.Sleep(ms);
 
-                Task t = HoldDown(key);
-                t.Start();
-            }
-            catch (OperationCanceledException)
-            {}
-            finally
-            {
-                s_cts.Dispose();
-            }
-            keybd_event((byte)Enum.Parse<Keys>(key), 0, (int)KeyEvent.放開, 0);
-        }
-
-        /// <summary>
-        /// 持續送出按鍵事件的排程
-        /// </summary>
-        /// <param name="key">鍵值</param>
-        /// <returns></returns>
-        private static Task HoldDown(string key)
-        {
-            while (true)
-            {
-                SendKeys.Send($"{{{key.ToUpper()}}}");
+                // 放開
+                keybd_event(vk, 0, (int)KeyEvent.放開, 0);
             }
         }
     }
