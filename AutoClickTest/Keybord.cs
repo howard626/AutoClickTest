@@ -43,19 +43,24 @@ namespace AutoClickTest
         /// </summary>
         /// <param name="key">鍵值</param>
         /// <param name="ms">按住毫秒</param>
+        [DllImport("user32.dll")]
+        static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
         public static void Hold(string key, int ms)
         {
             if (Enum.TryParse(key, true, out Keys virtualKey))
             {
                 byte vk = (byte)virtualKey;
-                // 按下
-                keybd_event(vk, 0, (int)KeyEvent.按下, 0);
+                byte scanCode = (byte)MapVirtualKey(vk, 0); // MAPVK_VK_TO_VSC
+
+                // 按下 (加入 0x0008 代表 KEYEVENTF_SCANCODE)
+                keybd_event(vk, scanCode, (int)KeyEvent.按下 | 0x0008, 0);
                 
                 // 等待
                 Thread.Sleep(ms);
 
-                // 放開
-                keybd_event(vk, 0, (int)KeyEvent.放開, 0);
+                // 放開 (0x0002 | 0x0008)
+                keybd_event(vk, scanCode, (int)KeyEvent.放開 | 0x0008, 0);
             }
         }
     }

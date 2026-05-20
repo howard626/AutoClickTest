@@ -9,19 +9,9 @@ namespace AutoClickTest
 {
     static class Program
     {
-        
-
-        /// <summary>
-        /// 設置鼠標位置
-        /// </summary>
-        /// <param name="x">X 座標 左上角為(0,0)</param>
-        /// <param name="y">Y 座標 左上角為(0,0)</param>
         [DllImport("User32.dll")]
-        public extern static void SetCursorPos(int x, int y);//設置鼠標位置
+        public extern static void SetCursorPos(int x, int y);
 
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
         [STAThread]
         static void Main()
         {
