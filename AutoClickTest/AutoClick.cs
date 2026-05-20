@@ -39,6 +39,14 @@ namespace AutoClickTest
         private void AutoClick_Load(object sender, EventArgs e)
         {
             InitializeActionBlocks();
+
+            // 隱藏的導航測試按鈕
+            System.Windows.Forms.Button btnNavTest = new System.Windows.Forms.Button();
+            btnNavTest.Text = "導航方位測試";
+            btnNavTest.Location = new System.Drawing.Point(1200, 90);
+            btnNavTest.Size = new System.Drawing.Size(120, 29);
+            btnNavTest.Click += (s, ev) => { new NavigationTestForm().Show(); };
+            this.Controls.Add(btnNavTest);
         }
 
         /// <summary>
@@ -55,6 +63,7 @@ namespace AutoClickTest
             AddActionBlock("前滾", ActionNameId.滑鼠前滾, Color.LightYellow);
             AddActionBlock("後滾", ActionNameId.滑鼠後滾, Color.LightYellow);
             AddActionBlock("圖案比對", ActionNameId.滑鼠圖案比對, Color.Plum);
+            AddActionBlock("迴圈", ActionNameId.迴圈, Color.LightSalmon);
 
             this.ActionBlocksPanel.AutoScroll = true;
             this.ActionBlocksPanel.FlowDirection = FlowDirection.TopDown;
@@ -228,6 +237,25 @@ namespace AutoClickTest
                         lblX.Visible = txtImgX.Visible = lblY.Visible = txtImgY.Visible = btnPickImg.Visible = !isKeyboard;
                         block.ResumeLayout();
                     };
+
+                    CheckBox chkComplex = new CheckBox() { Name = "chkComplex", Text = "IF-ELSE 模式", AutoSize = true, Margin = new Padding(5, 5, 0, 0) };
+                    chkComplex.CheckedChanged += (s, e) => {
+                        block.SuspendLayout();
+                        bool complex = chkComplex.Checked;
+                        lblExec.Visible = cbAction.Visible = !complex;
+                        dynamicArea.Visible = !complex && (cbAction.Text != "鍵盤按鍵");
+                        txtKeyMatch.Visible = !complex && (cbAction.Text == "鍵盤按鍵");
+                        block.ResumeLayout();
+                    };
+                    block.Controls.Add(chkComplex);
+                    break;
+                case ActionNameId.迴圈:
+                    block.Controls.Add(new Label() { Text = "次數:", AutoSize = true, Margin = new Padding(5, 5, 0, 0) });
+                    TextBox txtLoopCount = new TextBox() { Name = "txtLoopCount", Text = "5", Width = 40 };
+                    txtLoopCount.KeyPress += NumericOnly_KeyPress;
+                    block.Controls.Add(txtLoopCount);
+                    block.Controls.Add(new Label() { Text = "次 (0為無限)", AutoSize = true, Margin = new Padding(0, 5, 0, 0) });
+                    break;
                     break;
             }
 
@@ -331,7 +359,7 @@ namespace AutoClickTest
             }
         }
 
-        private void AddActionWithData(ActionDragData data, int index)
+        private Action CreateActionFromData(ActionDragData data)
         {
             Action action = null;
             int delay = data.Values.ContainsKey("txtDelay") ? (int.TryParse(data.Values["txtDelay"], out int d) ? d : 500) : 500;
@@ -366,6 +394,7 @@ namespace AutoClickTest
                 case ActionNameId.滑鼠圖案比對:
                     string mAction = data.Values.ContainsKey("cbMatchAction") ? data.Values["cbMatchAction"] : "左鍵點擊";
                     string mKey = data.Values.ContainsKey("txtKeyMatch") ? data.Values["txtKeyMatch"] : "";
+                    bool isComplex = data.Values.ContainsKey("chkComplex") && data.Values["chkComplex"] == "True";
                     action = new ImageAction() { 
                         Tool_Name = "滑鼠", 
                         Action_Desc = "圖案比對", 
@@ -374,11 +403,21 @@ namespace AutoClickTest
                         MatchActionType = mAction,
                         KeyCode = mKey,
                         X = x,
-                        Y = y
+                        Y = y,
+                        IsComplexMode = isComplex
                     };
                     break;
+                case ActionNameId.迴圈:
+                    int lCount = data.Values.ContainsKey("txtLoopCount") ? (int.TryParse(data.Values["txtLoopCount"], out int lc) ? lc : 5) : 5;
+                    action = new LoopAction() { Tool_Name = "控制", Action_Desc = "迴圈", LoopCount = lCount, Delay_MS = delay };
+                    break;
             }
+            return action;
+        }
 
+        private void AddActionWithData(ActionDragData data, int index)
+        {
+            Action action = CreateActionFromData(data);
             if (action != null)
             {
                 action.ID = ActionCount++;
@@ -408,16 +447,90 @@ namespace AutoClickTest
 
             Button btnDel = new Button() { Text = "X", Width = 25, Height = 25, ForeColor = Color.Red, FlatStyle = FlatStyle.Flat };
             btnDel.Click += (s, e) => {
-                int idx = ActionListPanel.Controls.GetChildIndex(block);
-                Actions.RemoveAt(idx);
-                ActionListPanel.Controls.Remove(block);
+                // 如果是在巢狀結構內，需要特殊處理
+                if (block.Parent is FlowLayoutPanel parentSlot && parentSlot.Tag is List<Action> subList)
+                {
+                    int sidx = parentSlot.Controls.GetChildIndex(block);
+                    subList.RemoveAt(sidx);
+                    parentSlot.Controls.Remove(block);
+                }
+                else
+                {
+                    int idx = ActionListPanel.Controls.GetChildIndex(block);
+                    Actions.RemoveAt(idx);
+                    ActionListPanel.Controls.Remove(block);
+                }
             };
             block.Controls.Add(btnDel);
 
-            // 雙擊編輯
             lbl.DoubleClick += (s, e) => ActionList_NodeMouseDoubleClick(block);
 
+            // --- IF-ELSE 模式特殊處理 ---
+            if (action is ImageAction img && img.IsComplexMode)
+            {
+                block.FlowDirection = FlowDirection.TopDown;
+                
+                block.Controls.Add(new Label() { Text = "┌─ 如果找到圖案：", AutoSize = true, Margin = new Padding(15, 5, 0, 0), ForeColor = Color.DarkGreen });
+                FlowLayoutPanel successSlot = CreateSlot(img.SuccessActions);
+                block.Controls.Add(successSlot);
+
+                block.Controls.Add(new Label() { Text = "├─ 否則 (ELSE)：", AutoSize = true, Margin = new Padding(15, 5, 0, 0), ForeColor = Color.DarkRed });
+                FlowLayoutPanel failureSlot = CreateSlot(img.FailureActions);
+                block.Controls.Add(failureSlot);
+                
+                block.Controls.Add(new Label() { Text = "└─ 結束判斷", AutoSize = true, Margin = new Padding(15, 0, 0, 5) });
+            }
+            else if (action is LoopAction loop)
+            {
+                block.FlowDirection = FlowDirection.TopDown;
+                block.Controls.Add(new Label() { Text = "┌─ 迴圈開始：", AutoSize = true, Margin = new Padding(15, 5, 0, 0), ForeColor = Color.SaddleBrown });
+                FlowLayoutPanel loopSlot = CreateSlot(loop.LoopActions);
+                block.Controls.Add(loopSlot);
+                block.Controls.Add(new Label() { Text = "└─ 迴圈結束", AutoSize = true, Margin = new Padding(15, 0, 0, 5) });
+            }
+
             return block;
+        }
+
+        private FlowLayoutPanel CreateSlot(List<Action> subList)
+        {
+            FlowLayoutPanel slot = new FlowLayoutPanel()
+            {
+                AutoSize = true,
+                MinimumSize = new Size(350, 40),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(240, 240, 240),
+                FlowDirection = FlowDirection.TopDown,
+                WrapContents = false,
+                AllowDrop = true,
+                Margin = new Padding(30, 0, 0, 5),
+                Tag = subList 
+            };
+            slot.DragEnter += ActionList_DragEnter;
+            slot.DragDrop += (s, e) => {
+                Point targetPoint = slot.PointToClient(new Point(e.X, e.Y));
+                Control targetCtrl = slot.GetChildAtPoint(targetPoint);
+                int insertIndex = targetCtrl != null ? slot.Controls.GetChildIndex(targetCtrl) : slot.Controls.Count;
+
+                if (e.Data.GetDataPresent(typeof(ActionDragData)))
+                {
+                    ActionDragData data = (ActionDragData)e.Data.GetData(typeof(ActionDragData));
+                    Action act = CreateActionFromData(data);
+                    if (act != null)
+                    {
+                        act.ID = ActionCount++;
+                        subList.Insert(insertIndex, act);
+                        Panel subBlock = CreateActionBlock(act);
+                        slot.Controls.Add(subBlock);
+                        slot.Controls.SetChildIndex(subBlock, insertIndex);
+                    }
+                }
+            };
+            
+            foreach (var act in subList)
+                slot.Controls.Add(CreateActionBlock(act));
+                
+            return slot;
         }
 
         private void UpdateActionLabelText(Label lbl, Action action)
@@ -442,6 +555,12 @@ namespace AutoClickTest
                 ImageAction img = (ImageAction)action;
                 string coordInfo = (img.X != 0 || img.Y != 0) ? $" 在 {img.X},{img.Y}" : " 在圖案中心";
                 lbl.Text = $"當看到 {Path.GetFileName(img.ImagePath)} 執行 {img.MatchActionType}{coordInfo}{(img.MatchActionType == "鍵盤按鍵" ? " " + img.KeyCode : "")}--延遲 {img.Delay_MS} 毫秒";
+            }
+            else if (type == typeof(LoopAction))
+            {
+                LoopAction loop = (LoopAction)action;
+                string countText = loop.LoopCount == 0 ? "無限" : loop.LoopCount.ToString();
+                lbl.Text = $"迴圈執行 {countText} 次--延遲 {loop.Delay_MS} 毫秒";
             }
         }
         /// <summary>
@@ -503,92 +622,66 @@ namespace AutoClickTest
         /// <summary>
         /// 開始執行程序
         /// </summary>
-        private void Run()
+        private async void Run()
         {
-            int delaySec = 0;
-            for (int i = 0; i < Actions.Count; i++)
+            await ExecuteList(Actions);
+        }
+
+        private async Task ExecuteList(List<Action> actionList)
+        {
+            foreach (var action in actionList)
             {
-                delaySec += Actions[i].Delay_MS;
-                if (i == Actions.Count - 1)
-                    Do(Actions[i], delaySec, Actions[i].GetType(), true); 
-                else
-                    Do(Actions[i], delaySec, Actions[i].GetType());
+                if (!IsStart) break;
+                await Task.Delay(action.Delay_MS);
+                await RunSingleAction(action);
             }
         }
 
-        /// <summary>
-        /// 開始執行動作
-        /// </summary>
-        private async void Do(Action action, int delaySec, Type type, bool end = false)
+        private async Task RunSingleAction(Action action)
         {
+            if (!IsStart) return;
             Random random = new Random();
-            await Task.Delay(delaySec + random.Next(-100, 100));
-            if (IsStart)
+
+            if (action is KeyCodeAction key)
             {
-                if (type == typeof(KeyCodeAction))
+                switch (key.Action_Desc)
                 {
-                    KeyCodeAction key = (KeyCodeAction)action;
-                    switch (key.Action_Desc)
-                    {
-                        case "按一下":
-                            Keybord.Press(key.KeyCode.ToUpper());
-                            break;
-                        case "按住":
-                            Keybord.Hold(key.KeyCode.ToUpper(), key.Hold_MS);
-                            break;
-                        default:
-                            break;
-                    }
+                    case "按一下": Keybord.Press(key.KeyCode.ToUpper()); break;
+                    case "按住": Keybord.Hold(key.KeyCode.ToUpper(), key.Hold_MS); break;
                 }
-                else if (type == typeof(MouseAction))
+            }
+            else if (action is MouseAction mouse && !(action is ImageAction))
+            {
+                if (mouse.Action_Desc.Contains("滾"))
                 {
-                    MouseAction mouse = (MouseAction)action;
+                    for (int j = 0; j < mouse.X; j++) 
+                        Mouse.Roll(mouse.Action_Desc == "前滾" ? Mouse.ROLLWAY.FRONT : Mouse.ROLLWAY.BACK);
+                }
+                else
+                {
+                    Mouse.Move(mouse.X + random.Next(-5, 5), mouse.Y + random.Next(-5, 5));
                     switch (mouse.Action_Desc)
                     {
-                        case "點一下左鍵":
-                            Mouse.Move(mouse.X + random.Next(-10, 10), mouse.Y + random.Next(-10, 10));
-                            Mouse.LeftClick();
-                            break;
-                        case "點兩下左鍵":
-                            Mouse.Move(mouse.X + random.Next(-10, 10), mouse.Y + random.Next(-10, 10));
-                            Mouse.LeftClick();
-                            Thread.Sleep(50);
-                            Mouse.LeftClick();
-                            break;
-                        case "點一下右鍵":
-                            Mouse.Move(mouse.X + random.Next(-10, 10), mouse.Y + random.Next(-10, 10));
-                            Mouse.RightClick();
-                            break;
-                        case "點一下中鍵":
-                            Mouse.Move(mouse.X + random.Next(-10, 10), mouse.Y + random.Next(-10, 10));
-                            Mouse.MiddleClick();
-                            break;
-                        case "前滾":
-                            for (int j = 0; j < mouse.X; j++)
-                            {
-                                Mouse.Roll(Mouse.ROLLWAY.FRONT);
-                            }
-                            break;
-                        case "後滾":
-                            for (int j = 0; j < mouse.X; j++)
-                            {
-                                Mouse.Roll(Mouse.ROLLWAY.BACK);
-                            }
-                            break;
-                        default:
-                            break;
+                        case "點一下左鍵": Mouse.LeftClick(); break;
+                        case "點兩下左鍵": Mouse.LeftClick(); Thread.Sleep(50); Mouse.LeftClick(); break;
+                        case "點一下右鍵": Mouse.RightClick(); break;
+                        case "點一下中鍵": Mouse.MiddleClick(); break;
                     }
                 }
-                else if (type == typeof(ImageAction))
+            }
+            else if (action is ImageAction img)
+            {
+                Point? loc = ImageSearch.Find(img.ImagePath, img.SearchRegion, img.Threshold);
+                if (loc.HasValue)
                 {
-                    ImageAction img = (ImageAction)action;
-                    Point? loc = ImageSearch.Find(img.ImagePath, img.SearchRegion, img.Threshold);
-                    if (loc.HasValue)
+                    if (img.IsComplexMode)
                     {
-                        // 如果有自定義座標且不為 0,0 則點擊自定義座標，否則點擊圖片中心
+                        await ExecuteList(img.SuccessActions);
+                    }
+                    else
+                    {
                         int targetX = (img.X != 0 || img.Y != 0) ? img.X : loc.Value.X;
                         int targetY = (img.X != 0 || img.Y != 0) ? img.Y : loc.Value.Y;
-                        
                         Mouse.Move(targetX, targetY);
                         switch (img.MatchActionType)
                         {
@@ -596,13 +689,32 @@ namespace AutoClickTest
                             case "左鍵雙擊": Mouse.LeftClick(); Thread.Sleep(50); Mouse.LeftClick(); break;
                             case "右鍵點擊": Mouse.RightClick(); break;
                             case "鍵盤按鍵": Keybord.Press(img.KeyCode); break;
-                            case "僅移動": break;
                         }
                     }
                 }
-                if (end && IsStart)
+                else if (img.IsComplexMode)
                 {
-                    Run();
+                    await ExecuteList(img.FailureActions);
+                }
+            }
+            else if (action is LoopAction loop)
+            {
+                int count = loop.LoopCount;
+                if (count == 0) // Infinite loop
+                {
+                    while (IsStart)
+                    {
+                        await ExecuteList(loop.LoopActions);
+                        await Task.Delay(10); // Small delay to prevent tight loop
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (!IsStart) break;
+                        await ExecuteList(loop.LoopActions);
+                    }
                 }
             }
         }

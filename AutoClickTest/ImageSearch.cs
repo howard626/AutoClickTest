@@ -1,104 +1,102 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Runtime.InteropServices;
+using System.IO;
+using OpenCvSharp;
 
 namespace AutoClickTest
 {
     public static class ImageSearch
     {
-        public static Point? Find(string templatePath, Rectangle region, double threshold)
+        // 手動將 Bitmap 轉換為 Mat，避免引入有衝突的 Extensions 套件
+        private static Mat BitmapToMat(Bitmap bitmap)
         {
-            if (string.IsNullOrEmpty(templatePath) || !System.IO.File.Exists(templatePath)) return null;
-
+            BitmapData bd = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             try
             {
-                using (Bitmap template = new Bitmap(templatePath))
+                using (Mat mat = Mat.FromPixelData(bitmap.Height, bitmap.Width, MatType.CV_8UC4, bd.Scan0, bd.Stride))
                 {
-                    if (region.Width <= 0 || region.Height <= 0)
-                        region = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
-
-                    using (Bitmap screen = new Bitmap(region.Width, region.Height))
-                    {
-                        using (Graphics g = Graphics.FromImage(screen))
-                        {
-                            g.CopyFromScreen(region.Location, Point.Empty, region.Size);
-                        }
-
-                        return FindMatch(screen, template, threshold, region.Location);
-                    }
-                }
-            }
-            catch { return null; }
-        }
-
-        private static Point? FindMatch(Bitmap screen, Bitmap template, double threshold, Point offset)
-        {
-            int sw = screen.Width;
-            int sh = screen.Height;
-            int tw = template.Width;
-            int th = template.Height;
-
-            BitmapData screenData = screen.LockBits(new Rectangle(0, 0, sw, sh), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            BitmapData templateData = template.LockBits(new Rectangle(0, 0, tw, th), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-
-            try
-            {
-                byte[] screenBytes = new byte[screenData.Stride * sh];
-                byte[] templateBytes = new byte[templateData.Stride * th];
-
-                Marshal.Copy(screenData.Scan0, screenBytes, 0, screenBytes.Length);
-                Marshal.Copy(templateData.Scan0, templateBytes, 0, templateBytes.Length);
-
-                for (int y = 0; y <= sh - th; y += 2)
-                {
-                    for (int x = 0; x <= sw - tw; x += 2)
-                    {
-                        if (IsMatch(screenBytes, screenData.Stride, templateBytes, templateData.Stride, x, y, tw, th, threshold))
-                        {
-                            return new Point(x + offset.X + tw / 2, y + offset.Y + th / 2);
-                        }
-                    }
+                    return mat.Clone();
                 }
             }
             finally
             {
-                screen.UnlockBits(screenData);
-                template.UnlockBits(templateData);
+                bitmap.UnlockBits(bd);
             }
-
-            return null;
         }
 
-        private static bool IsMatch(byte[] screen, int sStride, byte[] template, int tStride, int startX, int startY, int tw, int th, double threshold)
+        public static System.Drawing.Point? Find(string templatePath, Rectangle region, double threshold)
         {
-            int matchCount = 0;
-            int totalChecked = 0;
+            return Find(templatePath, region, threshold, out _, out _);
+        }
 
-            for (int ty = 0; ty < th; ty += 2)
+        public static System.Drawing.Point? Find(string templatePath, Rectangle region, double threshold, out double maxSimilarity, out Rectangle matchRect)
+        {
+            maxSimilarity = 0;
+            matchRect = Rectangle.Empty;
+
+            if (string.IsNullOrEmpty(templatePath) || !File.Exists(templatePath)) return null;
+
+            try
             {
-                for (int tx = 0; tx < tw; tx += 2)
+                if (region.Width <= 0 || region.Height <= 0)
+                    region = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+
+                // 擷取畫面
+                using (Bitmap screen = new Bitmap(region.Width, region.Height))
                 {
-                    int sPos = (startY + ty) * sStride + (startX + tx) * 4;
-                    int tPos = ty * tStride + tx * 4;
-
-                    byte sB = screen[sPos];
-                    byte sG = screen[sPos + 1];
-                    byte sR = screen[sPos + 2];
-
-                    byte tB = template[tPos];
-                    byte tG = template[tPos + 1];
-                    byte tR = template[tPos + 2];
-
-                    if (Math.Abs(sR - tR) < 30 && Math.Abs(sG - tG) < 30 && Math.Abs(sB - tB) < 30)
+                    using (Graphics g = Graphics.FromImage(screen))
                     {
-                        matchCount++;
+                        g.CopyFromScreen(region.Location, System.Drawing.Point.Empty, region.Size);
                     }
-                    totalChecked++;
+
+                    // 使用 OpenCV 進行進階特徵比對
+                    using (Mat screenMat = BitmapToMat(screen))
+                    using (Mat templateMat = Cv2.ImRead(templatePath, ImreadModes.Color)) // 讀取為彩色
+                    {
+                        if (screenMat.Empty() || templateMat.Empty()) return null;
+                        
+                        // 確保畫面比模板大
+                        if (screenMat.Width < templateMat.Width || screenMat.Height < templateMat.Height)
+                            return null;
+
+                        // 統一色域 (螢幕擷取通常是 BGRA，需要轉成 BGR 來比對)
+                        using (Mat screenBgr = new Mat())
+                        {
+                            if (screenMat.Channels() == 4)
+                                Cv2.CvtColor(screenMat, screenBgr, ColorConversionCodes.BGRA2BGR);
+                            else
+                                screenMat.CopyTo(screenBgr);
+
+                            using (Mat result = new Mat())
+                            {
+                                // CCoeffNormed 演算法：抗背景噪音能力強
+                                Cv2.MatchTemplate(screenBgr, templateMat, result, TemplateMatchModes.CCoeffNormed);
+                                Cv2.MinMaxLoc(result, out _, out double maxVal, out _, out OpenCvSharp.Point maxLoc);
+
+                                maxSimilarity = maxVal;
+                                matchRect = new Rectangle(maxLoc.X, maxLoc.Y, templateMat.Width, templateMat.Height);
+
+                                // 找到最佳匹配點，且相似度大於門檻值
+                                if (maxVal >= threshold)
+                                {
+                                    // 回傳匹配圖案的「正中心點」，並加上 region.Location 的偏移量
+                                    return new System.Drawing.Point(
+                                        maxLoc.X + region.X + (templateMat.Width / 2),
+                                        maxLoc.Y + region.Y + (templateMat.Height / 2)
+                                    );
+                                }
+                            }
+                        }
+                    }
                 }
             }
-
-            return (double)matchCount / totalChecked >= threshold;
+            catch 
+            { 
+                return null; 
+            }
+            
+            return null;
         }
     }
 }

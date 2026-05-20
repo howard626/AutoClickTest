@@ -11,15 +11,6 @@ namespace AutoClickTest
 {
     public partial class BackGround : Form
     {
-
-        /// <summary>
-        /// 獲取當前鼠標位置
-        /// </summary>
-        /// <param name="p"> 回傳的座標 </param>
-        /// <returns></returns>
-        [DllImport("User32.dll")]
-        public extern static bool GetCursorPos(out Point p);
-
         public BackGround()
         {
             InitializeComponent();
@@ -78,8 +69,8 @@ namespace AutoClickTest
             }
             else
             {
-                GetCursorPos(out Point p);
-                Point = p;
+                // 放棄有 Bug 的 GetCursorPos，改用 WinForms 內建的座標轉換，這能保證跟截圖功能完全一致！
+                Point = this.PointToScreen(e.Location); 
                 this.DialogResult = DialogResult.OK;
             }
         }

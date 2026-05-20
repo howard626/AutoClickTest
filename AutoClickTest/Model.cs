@@ -71,7 +71,8 @@ namespace AutoClickTest
         滑鼠前滾 = 5,
         滑鼠後滾 = 6,
         鍵盤按住 = 7,
-        滑鼠圖案比對 = 8
+        滑鼠圖案比對 = 8,
+        迴圈 = 9
     }
 
     public class ImageAction : MouseAction
@@ -81,5 +82,26 @@ namespace AutoClickTest
         public double Threshold { get; set; } = 0.9;
         public string MatchActionType { get; set; } = "左鍵點擊";
         public string KeyCode { get; set; } = "";
+
+        // IF-ELSE 擴充
+        public List<Action> SuccessActions { get; set; } = new List<Action>();
+        public List<Action> FailureActions { get; set; } = new List<Action>();
+        public bool IsComplexMode { get; set; } = false;
+    }
+
+    /// <summary>
+    /// 迴圈動作
+    /// </summary>
+    public class LoopAction : Action
+    {
+        /// <summary>
+        /// 迴圈次數 (0 為無限)
+        /// </summary>
+        public int LoopCount { get; set; } = 1;
+
+        /// <summary>
+        /// 迴圈內的動作列表
+        /// </summary>
+        public List<Action> LoopActions { get; set; } = new List<Action>();
     }
 }
