@@ -33,6 +33,9 @@ namespace AutoClickTest
             this.txtResult = new System.Windows.Forms.Label();
             this.Start = new System.Windows.Forms.Button();
             this.Stop = new System.Windows.Forms.Button();
+            this.btnRecord = new System.Windows.Forms.Button();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.btnImport = new System.Windows.Forms.Button();
             this.Test = new System.Windows.Forms.Button();
             this.MoveMouse = new System.Windows.Forms.Button();
             this.PointY = new System.Windows.Forms.TextBox();
@@ -86,6 +89,39 @@ namespace AutoClickTest
             this.Stop.Text = "停止";
             this.Stop.UseVisualStyleBackColor = true;
             this.Stop.Click += new System.EventHandler(this.Stop_Click);
+            // 
+            // btnRecord
+            // 
+            this.btnRecord.Location = new System.Drawing.Point(400, 526);
+            this.btnRecord.Margin = new System.Windows.Forms.Padding(4);
+            this.btnRecord.Name = "btnRecord";
+            this.btnRecord.Size = new System.Drawing.Size(96, 29);
+            this.btnRecord.TabIndex = 16;
+            this.btnRecord.Text = "🔴 錄製";
+            this.btnRecord.UseVisualStyleBackColor = true;
+            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
+            // 
+            // btnExport
+            // 
+            this.btnExport.Location = new System.Drawing.Point(860, 526);
+            this.btnExport.Margin = new System.Windows.Forms.Padding(4);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(96, 29);
+            this.btnExport.TabIndex = 14;
+            this.btnExport.Text = "匯出腳本";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // btnImport
+            // 
+            this.btnImport.Location = new System.Drawing.Point(970, 526);
+            this.btnImport.Margin = new System.Windows.Forms.Padding(4);
+            this.btnImport.Name = "btnImport";
+            this.btnImport.Size = new System.Drawing.Size(96, 29);
+            this.btnImport.TabIndex = 15;
+            this.btnImport.Text = "匯入腳本";
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
             // 
             // Test
             // 
@@ -193,7 +229,10 @@ namespace AutoClickTest
             this.Controls.Add(this.MoveMouse);
             this.Controls.Add(this.Test);
             this.Controls.Add(this.Stop);
+            this.Controls.Add(this.btnRecord);
             this.Controls.Add(this.Start);
+            this.Controls.Add(this.btnExport);
+            this.Controls.Add(this.btnImport);
             this.Controls.Add(this.txtResult);
             this.Controls.Add(this.Add);
             this.Margin = new System.Windows.Forms.Padding(4);
@@ -211,6 +250,9 @@ namespace AutoClickTest
         private System.Windows.Forms.Label txtResult;
         private System.Windows.Forms.Button Start;
         private System.Windows.Forms.Button Stop;
+        private System.Windows.Forms.Button btnRecord;
+        private System.Windows.Forms.Button btnExport;
+        private System.Windows.Forms.Button btnImport;
         private System.Windows.Forms.Button Test;
         private System.Windows.Forms.Button MoveMouse;
         private System.Windows.Forms.TextBox PointY;

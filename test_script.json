@@ -1,0 +1,129 @@
+[
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 900,
+    "Y": 500,
+    "ID": 1,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 500
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "T",
+    "Hold_MS": 0,
+    "ID": 2,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 500
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "E",
+    "Hold_MS": 100,
+    "ID": 3,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 500
+  },
+  {
+    "$type": "AutoClickTest.LoopAction, AutoClickTest",
+    "LoopCount": 3,
+    "LoopActions": [
+      {
+        "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+        "KeyCode": "S",
+        "Hold_MS": 0,
+        "ID": 4,
+        "Tool_Name": "鍵盤",
+        "Action_Desc": "按一下",
+        "Delay_MS": 200
+      }
+    ],
+    "ID": 5,
+    "Tool_Name": "控制",
+    "Action_Desc": "迴圈",
+    "Delay_MS": 500
+  },
+  {
+    "$type": "AutoClickTest.ImageAction, AutoClickTest",
+    "ImagePath": "img\\test_icon.png",
+    "SearchRegion": "0, 0, 0, 0",
+    "Threshold": 0.7,
+    "MatchActionType": "鍵盤按鍵",
+    "KeyCode": "Y",
+    "SuccessActions": [],
+    "FailureActions": [],
+    "IsComplexMode": false,
+    "X": 0,
+    "Y": 0,
+    "ID": 6,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "圖案比對",
+    "Delay_MS": 1000
+  },
+  {
+    "$type": "AutoClickTest.ImageAction, AutoClickTest",
+    "ImagePath": "img\\fake_image.png",
+    "SearchRegion": "0, 0, 0, 0",
+    "Threshold": 0.9,
+    "MatchActionType": "左鍵點擊",
+    "KeyCode": "",
+    "SuccessActions": [
+      {
+        "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+        "KeyCode": "K",
+        "Hold_MS": 0,
+        "ID": 7,
+        "Tool_Name": "鍵盤",
+        "Action_Desc": "按一下",
+        "Delay_MS": 500
+      }
+    ],
+    "FailureActions": [
+      {
+        "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+        "KeyCode": "N",
+        "Hold_MS": 0,
+        "ID": 8,
+        "Tool_Name": "鍵盤",
+        "Action_Desc": "按一下",
+        "Delay_MS": 500
+      },
+      {
+        "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+        "KeyCode": "O",
+        "Hold_MS": 0,
+        "ID": 9,
+        "Tool_Name": "鍵盤",
+        "Action_Desc": "按一下",
+        "Delay_MS": 500
+      }
+    ],
+    "IsComplexMode": true,
+    "X": 0,
+    "Y": 0,
+    "ID": 10,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "圖案比對",
+    "Delay_MS": 1000
+  },
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 300,
+    "Y": 300,
+    "ID": 11,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下右鍵",
+    "Delay_MS": 1000
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "ESCAPE",
+    "Hold_MS": 0,
+    "ID": 12,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 500
+  }
+]

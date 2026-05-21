@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace AutoClickTest
 {
@@ -26,6 +27,9 @@ namespace AutoClickTest
         /// </summary>
         private int ActionCount { get; set; }
 
+        private DateTime lastRecordTime;
+        private bool isRecording = false;
+
         public AutoClick()
         {
             InitializeComponent();
@@ -39,6 +43,9 @@ namespace AutoClickTest
         private void AutoClick_Load(object sender, EventArgs e)
         {
             InitializeActionBlocks();
+
+            GlobalHook.OnKeyDown += GlobalHook_OnKeyDown;
+            GlobalHook.OnMouseClick += GlobalHook_OnMouseClick;
 
             // 導航測試按鈕
             System.Windows.Forms.Button btnNavTest = new System.Windows.Forms.Button();
@@ -782,6 +789,159 @@ namespace AutoClickTest
             IsStart = false;
             Actions.Clear();
             ActionListPanel.Controls.Clear();
+        }
+
+        private void btnExport_Click(object sender, EventArgs e)
+        {
+            if (Actions.Count == 0)
+            {
+                MessageBox.Show("目前沒有任何動作可以匯出！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            using (SaveFileDialog sfd = new SaveFileDialog())
+            {
+                sfd.Filter = "JSON 檔案 (*.json)|*.json";
+                sfd.Title = "匯出腳本";
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto, Formatting = Formatting.Indented };
+                        string json = JsonConvert.SerializeObject(Actions, settings);
+                        File.WriteAllText(sfd.FileName, json);
+                        MessageBox.Show("腳本匯出成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("匯出失敗：" + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnImport_Click(object sender, EventArgs e)
+        {
+            // ... (keep the same as earlier) ...
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                ofd.Filter = "JSON 檔案 (*.json)|*.json";
+                ofd.Title = "匯入腳本";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    try
+                    {
+                        string json = File.ReadAllText(ofd.FileName);
+                        var settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto };
+                        var importedActions = JsonConvert.DeserializeObject<List<Action>>(json, settings);
+                        
+                        if (importedActions != null)
+                        {
+                            Clear_Click(null, null); // 清空現有腳本
+                            foreach (var act in importedActions)
+                            {
+                                Actions.Add(act);
+                                Panel block = CreateActionBlock(act);
+                                ActionListPanel.Controls.Add(block);
+                            }
+                            
+                            // 更新 ActionCount，避免 ID 重複
+                            int maxId = -1;
+                            foreach (var act in Actions)
+                            {
+                                if (act.ID > maxId) maxId = act.ID;
+                            }
+                            ActionCount = maxId + 1;
+
+                            MessageBox.Show("腳本匯入成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("匯入失敗：" + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+        }
+
+        private void btnRecord_Click(object sender, EventArgs e)
+        {
+            if (!isRecording)
+            {
+                DialogResult dialogResult = MessageBox.Show("即將開始錄製！\n將會清空目前畫面上的腳本，並且記錄你接下來的滑鼠點擊與鍵盤按鍵。\n\n錄製完成後，請按下 F12 鍵停止錄製。\n\n確定要開始嗎？", "錄製", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Clear_Click(null, null);
+                    isRecording = true;
+                    btnRecord.Text = "⏹ 停止錄製 (F12)";
+                    btnRecord.BackColor = Color.LightCoral;
+                    lastRecordTime = DateTime.Now;
+                    GlobalHook.Start();
+                }
+            }
+            else
+            {
+                StopRecording();
+            }
+        }
+
+        private void StopRecording()
+        {
+            isRecording = false;
+            GlobalHook.Stop();
+            btnRecord.Text = "🔴 錄製";
+            btnRecord.BackColor = SystemColors.Control;
+            MessageBox.Show("錄製結束！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void GlobalHook_OnKeyDown(Keys key)
+        {
+            if (!isRecording) return;
+
+            if (key == Keys.F12)
+            {
+                this.Invoke(new System.Action(() => { StopRecording(); }));
+                return;
+            }
+
+            int delay = (int)(DateTime.Now - lastRecordTime).TotalMilliseconds;
+            lastRecordTime = DateTime.Now;
+
+            this.Invoke(new System.Action(() => {
+                var act = new KeyCodeAction { 
+                    ID = ActionCount++, 
+                    Tool_Name = "鍵盤", 
+                    Action_Desc = "按一下", 
+                    KeyCode = key.ToString(), 
+                    Delay_MS = Math.Max(0, delay - 50) // Deduct minor processing time
+                };
+                Actions.Add(act);
+                Panel block = CreateActionBlock(act);
+                ActionListPanel.Controls.Add(block);
+            }));
+        }
+
+        private void GlobalHook_OnMouseClick(int x, int y, string btn)
+        {
+            if (!isRecording) return;
+
+            int delay = (int)(DateTime.Now - lastRecordTime).TotalMilliseconds;
+            lastRecordTime = DateTime.Now;
+
+            this.Invoke(new System.Action(() => {
+                string desc = btn == "Left" ? "點一下左鍵" : (btn == "Right" ? "點一下右鍵" : "點一下中鍵");
+                var act = new MouseAction { 
+                    ID = ActionCount++, 
+                    Tool_Name = "滑鼠", 
+                    Action_Desc = desc, 
+                    X = x, 
+                    Y = y, 
+                    Delay_MS = Math.Max(0, delay - 50) 
+                };
+                Actions.Add(act);
+                Panel block = CreateActionBlock(act);
+                ActionListPanel.Controls.Add(block);
+            }));
         }
     }
 }
