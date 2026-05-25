@@ -35,6 +35,7 @@ namespace AutoClickTest
             this.components = new System.ComponentModel.Container();
             this.Add = new System.Windows.Forms.Button();
             this.txtResult = new System.Windows.Forms.Label();
+            this.lblScriptStatus = new System.Windows.Forms.Label();
             this.lblLoopCount = new System.Windows.Forms.Label();
             this.numLoopCount = new System.Windows.Forms.NumericUpDown();
             this.Start = new System.Windows.Forms.Button();
@@ -108,7 +109,12 @@ namespace AutoClickTest
             this.btnFishTest.Text = "方舟釣魚測試"; this.btnFishTest.Size = new Size(170, 30);
             this.X.Text = "X:"; this.Y.Text = "Y:"; this.PointX.Size = new Size(70, 25); this.PointY.Size = new Size(70, 25);
             this.txtResult.Text = "座標資訊";
-            this.RightPanel.Controls.AddRange(new Control[] { this.Test, this.btnNavTest, this.MoveMouse, this.btnFishTest, this.X, this.PointX, this.Y, this.PointY, this.txtResult });
+            // Script status label
+            this.lblScriptStatus.Text = "狀態: 停止";
+            this.lblScriptStatus.AutoEllipsis = true;
+            this.lblScriptStatus.Size = new Size(170, 25);
+            this.lblScriptStatus.Location = new Point(10, 300);
+            this.RightPanel.Controls.AddRange(new Control[] { this.Test, this.btnNavTest, this.MoveMouse, this.btnFishTest, this.X, this.PointX, this.Y, this.PointY, this.txtResult, this.lblScriptStatus });
 
             // 底部按鈕
             int footerY = 510;
@@ -137,6 +143,7 @@ namespace AutoClickTest
         private System.Windows.Forms.Label lblLoopCount;
         private System.Windows.Forms.NumericUpDown numLoopCount;
         private System.Windows.Forms.Button Start;
+        private System.Windows.Forms.Label lblScriptStatus;
         private System.Windows.Forms.Button Stop;
         private System.Windows.Forms.Button btnRecord;
         private System.Windows.Forms.Button btnExport;

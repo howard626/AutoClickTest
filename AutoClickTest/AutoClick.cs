@@ -72,6 +72,35 @@ namespace AutoClickTest
 
         }
 
+        // Lightweight UI status update helper (thread-safe, non-blocking)
+        private void UpdateScriptStatus(string text)
+        {
+            try
+            {
+                if (this.IsHandleCreated && this.InvokeRequired)
+                {
+                    this.BeginInvoke(new Action<string>(UpdateScriptStatus), text);
+                    return;
+                }
+                if (this.lblScriptStatus != null) this.lblScriptStatus.Text = text;
+            }
+            catch { }
+        }
+
+        private string GetActionDescription(Action action)
+        {
+            try
+            {
+                if (action == null) return "(無)";
+                if (action is KeyCodeAction k) return $"鍵盤 {k.Action_Desc} {k.KeyCode}";
+                if (action is MouseAction m) return $"滑鼠 {m.Action_Desc} ({m.X},{m.Y})";
+                if (action is ImageAction ia) return $"圖案 {System.IO.Path.GetFileName(ia.ImagePath)}";
+                if (action is LoopAction) return "迴圈";
+                return action.Action_Desc ?? "動作";
+            }
+            catch { return "動作"; }
+        }
+
 
 
         /// <summary>
@@ -1367,7 +1396,39 @@ namespace AutoClickTest
 
         {
 
-            await ExecuteList(Actions);
+            // Prevent double start and update UI state
+            try { this.Start.Enabled = false; } catch { }
+            try { this.Stop.Enabled = true; } catch { }
+            UpdateScriptStatus("執行中... 準備動作");
+
+            int repeats = 1;
+            try
+            {
+                repeats = (int)this.numLoopCount.Value;
+            }
+            catch { repeats = 1; }
+
+            if (repeats == 0)
+            {
+                // Infinite repeat of the whole action list
+                while (IsStart)
+                {
+                    await ExecuteList(Actions);
+                    await Task.Delay(10); // small delay to avoid tight loop
+                }
+            }
+            else
+            {
+                for (int r = 0; r < repeats && IsStart; r++)
+                {
+                    await ExecuteList(Actions);
+                }
+            }
+
+            // finished or stopped
+            try { this.Start.Enabled = true; } catch { }
+            try { this.Stop.Enabled = false; } catch { }
+            UpdateScriptStatus("狀態: 停止");
 
         }
 
@@ -1386,6 +1447,9 @@ namespace AutoClickTest
                 if (!IsStart) break;
 
                 var action = actionList[i];
+
+                // 更新狀態（輕量，不會阻塞執行）
+                UpdateScriptStatus($"執行第 {i + 1}/{actionList.Count}: {GetActionDescription(action)}");
 
                 await Task.Delay(action.Delay_MS);
 
@@ -1630,6 +1694,7 @@ namespace AutoClickTest
         {
 
             IsStart = false;
+            try { UpdateScriptStatus("停止中..."); } catch { }
 
         }
 
