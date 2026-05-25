@@ -98,35 +98,9 @@ namespace AutoClickTest
 
 
 
-            // 導航測試按鈕
-
-            System.Windows.Forms.Button btnNavTest = new System.Windows.Forms.Button();
-
-            btnNavTest.Text = "導航方位測試";
-
-            btnNavTest.Location = new System.Drawing.Point(1200, 90);
-
-            btnNavTest.Size = new System.Drawing.Size(120, 29);
-
-            btnNavTest.Click += (s, ev) => { new NavigationTestForm().Show(); };
-
-            this.Controls.Add(btnNavTest);
-
-
-
-            // 釣魚測試按鈕
-
-            System.Windows.Forms.Button btnFishTest = new System.Windows.Forms.Button();
-
-            btnFishTest.Text = "方舟釣魚測試";
-
-            btnFishTest.Location = new System.Drawing.Point(1200, 295);
-
-            btnFishTest.Size = new System.Drawing.Size(120, 29);
-
-            btnFishTest.Click += (s, ev) => { new FishingTestForm().Show(); };
-
-            this.Controls.Add(btnFishTest);
+            // 設定由 Designer 建立的測試按鈕的事件
+            this.btnNavTest.Click += (s, ev) => { new NavigationTestForm().Show(); };
+            this.btnFishTest.Click += (s, ev) => { new FishingTestForm().Show(); };
 
         }
 

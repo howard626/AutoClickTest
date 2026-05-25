@@ -1,0 +1,101 @@
+[
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 965,
+    "Y": 257,
+    "ID": 11,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點兩下左鍵",
+    "Delay_MS": 500
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Space",
+    "Hold_MS": 0,
+    "ID": 12,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 3100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "W",
+    "Hold_MS": 0,
+    "ID": 1,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "S",
+    "Hold_MS": 0,
+    "ID": 2,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "W",
+    "Hold_MS": 0,
+    "ID": 4,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "F",
+    "Hold_MS": 0,
+    "ID": 5,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "E",
+    "Hold_MS": 0,
+    "ID": 6,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Z",
+    "Hold_MS": 0,
+    "ID": 7,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "T",
+    "Hold_MS": 2500,
+    "ID": 8,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 1046,
+    "Y": 522,
+    "ID": 10,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 100
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "V",
+    "Hold_MS": 1500,
+    "ID": 9,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 100
+  }
+]

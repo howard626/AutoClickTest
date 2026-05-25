@@ -154,6 +154,17 @@ namespace AutoClickTest
             this.Test.UseVisualStyleBackColor = true;
             this.Test.Click += new System.EventHandler(this.Test_Click);
             // 
+            // RightPanel
+            // 
+            this.RightPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.RightPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.RightPanel.WrapContents = false;
+            this.RightPanel.Name = "RightPanel";
+            this.RightPanel.Size = new System.Drawing.Size(220, 432);
+            this.RightPanel.AutoScroll = true;
+            this.RightPanel.Padding = new System.Windows.Forms.Padding(8);
+            this.RightPanel.Dock = System.Windows.Forms.DockStyle.Right;
+            // 
             // MoveMouse
             // 
             this.MoveMouse.Location = new System.Drawing.Point(1200, 257);
@@ -164,6 +175,24 @@ namespace AutoClickTest
             this.MoveMouse.Text = "移動滑鼠座標";
             this.MoveMouse.UseVisualStyleBackColor = true;
             this.MoveMouse.Click += new System.EventHandler(this.MoveMouse_Click);
+            // 
+            // btnNavTest
+            // 
+            this.btnNavTest = new System.Windows.Forms.Button();
+            this.btnNavTest.Name = "btnNavTest";
+            this.btnNavTest.Size = new System.Drawing.Size(200, 29);
+            this.btnNavTest.TabIndex = 21;
+            this.btnNavTest.Text = "導航方位測試";
+            this.btnNavTest.UseVisualStyleBackColor = true;
+            // 
+            // btnFishTest
+            // 
+            this.btnFishTest = new System.Windows.Forms.Button();
+            this.btnFishTest.Name = "btnFishTest";
+            this.btnFishTest.Size = new System.Drawing.Size(200, 29);
+            this.btnFishTest.TabIndex = 22;
+            this.btnFishTest.Text = "方舟釣魚測試";
+            this.btnFishTest.UseVisualStyleBackColor = true;
             // 
             // PointY
             // 
@@ -210,6 +239,9 @@ namespace AutoClickTest
             this.ActionListPanel.Location = new System.Drawing.Point(580, 52);
             this.ActionListPanel.Name = "ActionListPanel";
             this.ActionListPanel.Size = new System.Drawing.Size(600, 432);
+            this.ActionListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.ActionListPanel.TabIndex = 11;
             this.ActionListPanel.WrapContents = false;
             this.ActionListPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.ActionList_DragDrop);
@@ -230,6 +262,8 @@ namespace AutoClickTest
             this.ActionBlocksPanel.Location = new System.Drawing.Point(15, 52);
             this.ActionBlocksPanel.Name = "ActionBlocksPanel";
             this.ActionBlocksPanel.Size = new System.Drawing.Size(550, 432);
+            this.ActionBlocksPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.ActionBlocksPanel.TabIndex = 13;
             this.ActionBlocksPanel.WrapContents = false;
             this.ActionBlocksPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
@@ -239,21 +273,27 @@ namespace AutoClickTest
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1350, 650);
+            this.MinimumSize = new System.Drawing.Size(1100, 650);
             this.Controls.Add(this.ActionBlocksPanel);
             this.Controls.Add(this.Clear);
             this.Controls.Add(this.ActionListPanel);
-            this.Controls.Add(this.PointX);
-            this.Controls.Add(this.Y);
-            this.Controls.Add(this.X);
-            this.Controls.Add(this.PointY);
-            this.Controls.Add(this.MoveMouse);
-            this.Controls.Add(this.Test);
+            this.Controls.Add(this.RightPanel);
+            // add right-side controls into RightPanel in desired order
+            this.RightPanel.Controls.Add(this.txtResult);
+            this.RightPanel.Controls.Add(this.Test);
+            this.RightPanel.Controls.Add(this.btnNavTest);
+            this.RightPanel.Controls.Add(this.MoveMouse);
+            this.RightPanel.Controls.Add(this.btnFishTest);
+            this.RightPanel.Controls.Add(this.X);
+            this.RightPanel.Controls.Add(this.PointX);
+            this.RightPanel.Controls.Add(this.Y);
+            this.RightPanel.Controls.Add(this.PointY);
             this.Controls.Add(this.Stop);
             this.Controls.Add(this.btnRecord);
             this.Controls.Add(this.Start);
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.btnImport);
-            this.Controls.Add(this.txtResult);
+
             this.Controls.Add(this.lblLoopCount);
             this.Controls.Add(this.numLoopCount);
             this.Controls.Add(this.Add);
@@ -288,6 +328,9 @@ namespace AutoClickTest
         private System.Windows.Forms.TextBox PointX;
         private System.Windows.Forms.FlowLayoutPanel ActionListPanel;
         private System.Windows.Forms.Button Clear;
+        private System.Windows.Forms.Button btnNavTest;
+        private System.Windows.Forms.Button btnFishTest;
+        private System.Windows.Forms.FlowLayoutPanel RightPanel;
         private System.Windows.Forms.FlowLayoutPanel ActionBlocksPanel;
     }
 

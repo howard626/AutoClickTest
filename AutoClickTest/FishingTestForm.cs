@@ -27,6 +27,27 @@ namespace AutoClickTest
         [DllImport("user32.dll")]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("user32.dll")]
+        private static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32.dll")]
+        private static extern bool BringWindowToTop(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern int GetWindowText(IntPtr hWnd, System.Text.StringBuilder lpString, int nMaxCount);
+
+        [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Auto)]
+        private static extern int GetWindowTextLength(IntPtr hWnd);
+
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
         {
@@ -182,11 +203,17 @@ namespace AutoClickTest
                 IntPtr gameHWnd = FindGameWindow();
                 if (gameHWnd == IntPtr.Zero)
                 {
-                    Log("警告：找不到本機的 Lost Ark 視窗。因為您可能使用遠端桌面，請自行點擊遊戲畫面使其保持在最上層。");
+                    Log("警告：找不到本機的 Lost Ark 視窗。因為您可能使用遠端桌面，請自行點擊遊戲畫面使其保持在最上層。\n建議：以管理員身分執行該程式，或確認遊戲不是由防護軟體/防作弊機制隔離。\n(我也會嘗試使用更寬鬆的視窗搜尋條件)");
                 }
                 else if (chkFocusWindow.Checked)
                 {
-                    SetForegroundWindow(gameHWnd);
+                    bool ok = ForceBringWindowToFront(gameHWnd);
+                    Log($"ForceBringWindowToFront returned: {ok}");
+                    if (!ok)
+                    {
+                        bool setOk = SetForegroundWindow(gameHWnd);
+                        Log($"Fallback SetForegroundWindow returned: {setOk}");
+                    }
                     System.Threading.Thread.Sleep(500);
                 }
 
@@ -247,7 +274,89 @@ namespace AutoClickTest
             int currentId = Process.GetCurrentProcess().Id;
             var proc = Process.GetProcesses()
                 .FirstOrDefault(p => p.Id != currentId && (p.ProcessName.ToLower().Contains("lostark") || p.MainWindowTitle.ToLower().Contains("lost ark")));
-            return proc?.MainWindowHandle ?? IntPtr.Zero;
+            if (proc == null) return IntPtr.Zero;
+
+            IntPtr hwnd = proc.MainWindowHandle;
+            try
+            {
+                string title = proc.MainWindowTitle;
+                Log($"找到遊戲程序: {proc.ProcessName} (PID {proc.Id}), HWND: 0x{hwnd.ToInt64():X}, Title: {title}");
+            }
+            catch { }
+            return hwnd;
+        }
+
+        private bool ForceBringWindowToFront(IntPtr hWnd)
+        {
+            if (hWnd == IntPtr.Zero) return false;
+
+            IntPtr fg = GetForegroundWindow();
+            uint fgThread = GetWindowThreadProcessId(fg, out _);
+            uint targetThread = GetWindowThreadProcessId(hWnd, out _);
+
+            bool attached = false;
+            try
+            {
+                if (fgThread != targetThread)
+                {
+                    attached = AttachThreadInput(targetThread, fgThread, true);
+                }
+
+                // Try to bring to front
+                ShowWindow(hWnd, 5); // SW_SHOW
+                BringWindowToTop(hWnd);
+                bool ok = SetForegroundWindow(hWnd);
+
+                // Small delay to let OS process
+                System.Threading.Thread.Sleep(100);
+
+                return GetForegroundWindow() == hWnd;
+            }
+            finally
+            {
+                if (attached)
+                {
+                    AttachThreadInput(targetThread, fgThread, false);
+                }
+            }
+        }
+
+        private string GetWindowTitle(IntPtr hWnd)
+        {
+            try
+            {
+                int len = GetWindowTextLength(hWnd);
+                if (len <= 0) return string.Empty;
+                var sb = new System.Text.StringBuilder(len + 1);
+                GetWindowText(hWnd, sb, sb.Capacity);
+                return sb.ToString();
+            }
+            catch { return string.Empty; }
+        }
+
+        private void SendKeyToGame(string keyName, int ms)
+        {
+            IntPtr gameHWnd = FindGameWindow();
+            string beforeTitle = GetWindowTitle(GetForegroundWindow());
+            Log($"目前前景視窗: {beforeTitle}");
+
+            if (gameHWnd != IntPtr.Zero)
+            {
+                bool ok = ForceBringWindowToFront(gameHWnd);
+                Log($"Force bring game window result: {ok}");
+            }
+
+            string afterTitle = GetWindowTitle(GetForegroundWindow());
+            Log($"切換後前景視窗: {afterTitle}");
+
+            try
+            {
+                Keybord.Hold(keyName, ms);
+            }
+            catch (Exception ex)
+            {
+                Log($"發送鍵失敗: {ex.Message}");
+            }
         }
 
         private Rectangle GetGameWindowRect()
@@ -306,18 +415,21 @@ namespace AutoClickTest
                         if (isWaitingForNetCast)
                         {
                             Log($"鎖定目標螢幕並強制模擬灑網 (按下 F)... 進入小遊戲偵測模式");
-                            Task.Run(() => Keybord.Hold("F", 80));
+                            Log("發送鍵盤事件: F (background)");
+                            Task.Run(() => SendKeyToGame("F", 80));
                             isWaitingForNetCast = false;
                         }
                         else if (isNetReady)
                         {
                             Log($"[自動灑網] 偵測到灑網圖示亮起！鎖定目標螢幕並模擬灑網 (按下 F)...");
-                            Task.Run(() => Keybord.Hold("F", 80));
+                            Log("發送鍵盤事件: F (background)");
+                            Task.Run(() => SendKeyToGame("F", 80));
                         }
                         else
                         {
                             Log($"鎖定目標螢幕並模擬拋竿 (按下 E)...");
-                            Task.Run(() => Keybord.Hold("E", 80));
+                            Log("發送鍵盤事件: E (background)");
+                            Task.Run(() => SendKeyToGame("E", 80));
                         }
                         
                         ChangeState(FishingState.WaitingForBite);
@@ -403,7 +515,7 @@ namespace AutoClickTest
                             if (elapsedWaitMs > 4000 && biteLoc.HasValue && biteSim > 0.55)
                             {
                                 Log($"魚咬鉤了！偵測到驚嘆號 (相似度: {biteSim:F2})，收竿！");
-                                Task.Run(() => Keybord.Hold("E", 80));
+                                Task.Run(() => SendKeyToGame("E", 80));
                                 ChangeState(FishingState.Reeling);
                                 return;
                             }
