@@ -59,6 +59,7 @@ namespace AutoClickTest
         // Image paths
         private string biteImagePath;
         private string spacebarImagePath;
+        private string successImagePath;
         private string failImagePath;
         private string netIconImagePath;
 
@@ -71,7 +72,8 @@ namespace AutoClickTest
         private void InitializePaths()
         {
             biteImagePath = GetImagePath("釣魚_驚嘆號.png");
-            spacebarImagePath = GetImagePath("spacebar_template.png");
+            spacebarImagePath = GetImagePath("spacebar_template_2.png");
+            successImagePath = GetImagePath("釣魚_灑網_成功.png");
             failImagePath = GetImagePath("釣魚_失敗.png");
             netIconImagePath = GetImagePath("釣魚_灑網圖示.png");
         }
@@ -126,7 +128,7 @@ namespace AutoClickTest
             this.Controls.AddRange(new Control[] { btnStartStop, btnStartMinigame, chkFocusWindow, lblState, lblDetails, txtLogs, picDebug });
 
             stateTimer = new Timer();
-            stateTimer.Interval = 100; // 100ms interval for balanced responsiveness and CPU usage
+            stateTimer.Interval = 40; // 100ms interval for balanced responsiveness and CPU usage
             stateTimer.Tick += StateTimer_Tick;
         }
 
@@ -348,7 +350,7 @@ namespace AutoClickTest
                     // 強制等待 1.5 秒的拋竿/灑網動畫，這段期間內不做任何影像辨識，避免因為動畫特效導致誤判！
                     if (elapsedWaitMs < 1500)
                     {
-                        lblDetails.Text = $"等待動畫播完... ({(1500 - elapsedWaitMs) / 1000.0:F1}s)";
+                        Log($"等待動畫播完... ({(1500 - elapsedWaitMs) / 1000.0:F1}s)");
                         return;
                     }
 
@@ -371,7 +373,7 @@ namespace AutoClickTest
                         if (spaceSim > maxSpaceSimSeen) maxSpaceSimSeen = spaceSim;
                         
                         // 門檻恢復回 0.80，避免在小遊戲還沒跳出來之前，誤把白色的衣服或地板當成空白鍵！
-                        if (spaceLoc.HasValue && spaceSim > 0.80)
+                        if (spaceLoc.HasValue && spaceSim > 0.45)
                         {
                             Log($"偵測到灑網小遊戲出現！(相似度: {spaceSim:F2})");
                             ChangeState(FishingState.Minigame);
@@ -394,7 +396,7 @@ namespace AutoClickTest
                             }
 
                             // 強制更新 UI (加上 Refresh 避免 UI 執行緒太忙導致畫面全白)
-                            lblDetails.Text = $"等待咬鉤中... (驚嘆號: {biteSim:F2}, 失敗訊息: {failSim:F2})";
+                            Log($"等待咬鉤中... (驚嘆號: {biteSim:F2}, 失敗訊息: {failSim:F2})");
 
                             // 門檻降至 0.55，並加入 4 秒冷卻時間。這樣即使浮標或水花有 0.64 的相似度，在前 4 秒也會被無視。
                             // 而真正的驚嘆號（剛剛測出約 0.60）在 4 秒後出現就能被準確抓到！
@@ -415,7 +417,7 @@ namespace AutoClickTest
                         }
                         else
                         {
-                            lblDetails.Text = $"等待灑網小遊戲出現中...";
+                            Log($"等待灑網小遊戲出現中...(相似度: {spaceSim:F2})");
                         }
                         
                         if (picDebug.Image != null) picDebug.Image.Dispose();
@@ -442,151 +444,73 @@ namespace AutoClickTest
                     break;
 
                 case FishingState.Minigame:
-                    // Solve QTE Minigame
-                    using (Bitmap screenBmp = CaptureRegion(currentSearchRect))
-                    using (Mat screenMat = BitmapToMat(screenBmp))
+                    stateTimer.Stop();
+                    Log(">>> 進入極速辨識模式 (UI 更新已暫停以提升效能) <<<");
+
+                    bool minigameActive = true;
+                    int loopCount = 0;
+
+                    while (minigameActive && isRunning)
                     {
-                        OpenCvSharp.Point? spaceLoc = MatchTemplateOnMat(screenMat, spacebarImagePath, out double spaceSim);
-                        if (!spaceLoc.HasValue || spaceSim < 0.70)
+                        using (Bitmap screenBmp = CaptureRegion(currentSearchRect))
+                        using (Mat screenMat = BitmapToMat(screenBmp))
                         {
-                            Log("小遊戲結束 (Spacebar 提示消失)，回到收網等待狀態...");
-                            ChangeState(FishingState.Reeling);
-                            return;
-                        }
+                            // 1. 檢查 Spacebar 鎖定位置
+                            OpenCvSharp.Point? spaceLoc = MatchTemplateOnMat(screenMat, spacebarImagePath, out double spaceSim);
 
-                        // We found the Spacebar anchor at spaceLoc (relative to searchRect)
-                        int anchorX = spaceLoc.Value.X;
-                        int anchorY = spaceLoc.Value.Y;
-
-                        // Fishing rod column is AnchorX + 218
-                        int rodX = anchorX + 218;
-
-                        // Scan for Yellow Area
-                        int yellowTopY = -1;
-                        int yellowBottomY = -1;
-                        var indexer = screenMat.GetGenericIndexer<Vec3b>();
-
-                        for (int y = anchorY - 480; y < anchorY; y++)
-                        {
-                            if (y < 0 || y >= screenMat.Height) continue;
-                            
-                            bool isYellow = false;
-                            for (int dx = -2; dx <= 2; dx++)
+                            if (!spaceLoc.HasValue || spaceSim < 0.40)
                             {
-                                int cx = rodX + dx;
-                                if (cx < 0 || cx >= screenMat.Width) continue;
-                                var color = indexer[y, cx];
-                                byte b = color.Item0;
-                                byte g = color.Item1;
-                                byte r = color.Item2;
-                                // Yellow: R > 180, G > 180, B < 120
-                                if (r > 180 && g > 170 && b < 120)
+                                Log("小遊戲結束");
+                                minigameActive = false;
+                                break;
+                            }
+
+                            // 2. 定位 ROI
+                            int roiX = Math.Max(0, spaceLoc.Value.X - 50);
+                            Rect roiRect = new Rect(roiX, 0, Math.Min(550, screenMat.Width - roiX), screenMat.Height);
+
+                            using (Mat subMat = new Mat(screenMat, roiRect))
+                            {
+                                // 3. 辨識 SUCCESS
+                                OpenCvSharp.Point? successLoc = MatchTemplateOnMat(subMat, successImagePath, out double successSim);
+
+                                // --- 效能優化：不要每一幀都 Log 和更新圖片 ---
+                                loopCount++;
+                                if (loopCount % 20 == 0) // 每 20 次辨識才更新一次 UI 數值
                                 {
-                                    isYellow = true;
+                                    lblDetails.Text = $"[運作中] Space:{spaceSim:F2} | SUCCESS:{successSim:F2}";
+
+                                    // 每 20 次才畫一張圖，不然會太慢
+                                    if (picDebug.Image != null) picDebug.Image.Dispose();
+                                    picDebug.Image = MatToBitmap(subMat);
+                                    picDebug.Refresh();
+                                }
+
+                                // 4. 觸發判斷
+                                // 如果 0.75 還是不到，請先觀察 SUCCESS 出現時數值跳到多少
+                                if (successLoc.HasValue && successSim > 0.70)
+                                {
+                                    Log($"[！！！成功！！！] 偵測到時機 (相似度: {successSim:F2})");
+
+                                    // 連點 10 下
+                                    for (int i = 0; i < 10; i++)
+                                    {
+                                        Keybord.Press("Space");
+                                        System.Threading.Thread.Sleep(30);
+                                    }
+
+                                    minigameActive = false;
                                     break;
                                 }
                             }
-
-                            if (isYellow)
-                            {
-                                if (yellowTopY == -1) yellowTopY = y;
-                                yellowBottomY = y;
-                            }
                         }
 
-                        // Fallback if yellow not detected clearly
-                        if (yellowTopY == -1)
-                        {
-                            yellowTopY = anchorY - 210;
-                            yellowBottomY = anchorY - 110;
-                        }
-
-                        // Scan for Bobber (Red pixels) in columns rodX + 2 to rodX + 35
-                        int redYSum = 0;
-                        int redCount = 0;
-                        for (int y = anchorY - 480; y < anchorY; y++)
-                        {
-                            if (y < 0 || y >= screenMat.Height) continue;
-                            for (int x = rodX + 2; x <= rodX + 35; x++)
-                            {
-                                if (x < 0 || x >= screenMat.Width) continue;
-                                var color = indexer[y, x];
-                                byte b = color.Item0;
-                                byte g = color.Item1;
-                                byte r = color.Item2;
-                                // Red: R > 150, G < 100, B < 100
-                                if (r > 150 && g < 100 && b < 100)
-                                {
-                                    redYSum += y;
-                                    redCount++;
-                                }
-                            }
-                        }
-
-                        int bobberY = (redCount > 0) ? (redYSum / redCount) : -1;
-                        int yellowCenterY = (yellowTopY + yellowBottomY) / 2;
-
-                        lblDetails.Text = $"指針 Y: {bobberY} | 黃色區 Y: {yellowTopY}..{yellowBottomY} (中心: {yellowCenterY})";
-
-                        // Bang-bang Controller: If bobber is below the center of the yellow area (larger Y value), tap Spacebar!
-                        // In screen coordinates, larger Y is lower.
-                        // We target a bit below the center to give some buffer
-                        int targetY = yellowCenterY + 15;
-                        bool shouldTap = false;
-                        if (bobberY != -1 && bobberY > targetY)
-                        {
-                            shouldTap = true;
-                            // Tap Spacebar in background
-                            Task.Run(() => Keybord.Hold("Space", 35));
-                        }
-
-                        // Update debug picture box
-                        // Crop the vertical bar area to display
-                        int cropX = Math.Max(0, anchorX - 20);
-                        int cropY = Math.Max(0, anchorY - 500);
-                        int cropW = Math.Min(screenMat.Width - cropX, 300);
-                        int cropH = Math.Min(screenMat.Height - cropY, 520);
-
-                        using (Mat cropMat = new Mat(screenMat, new Rect(cropX, cropY, cropW, cropH)))
-                        using (Bitmap debugBmp = MatToBitmap(cropMat))
-                        {
-                            using (Graphics g = Graphics.FromImage(debugBmp))
-                            {
-                                // Draw yellow zone limits
-                                int relYellowTop = yellowTopY - cropY;
-                                int relYellowBottom = yellowBottomY - cropY;
-                                int relRodX = rodX - cropX;
-
-                                using (Pen pYellow = new Pen(Color.Gold, 2))
-                                {
-                                    g.DrawRectangle(pYellow, relRodX - 10, relYellowTop, 20, relYellowBottom - relYellowTop);
-                                }
-
-                                // Draw center target line
-                                using (Pen pGreen = new Pen(Color.Lime, 1))
-                                {
-                                    g.DrawLine(pGreen, relRodX - 15, yellowCenterY - cropY, relRodX + 15, yellowCenterY - cropY);
-                                }
-
-                                // Draw bobber position
-                                if (bobberY != -1)
-                                {
-                                    using (Pen pRed = new Pen(Color.Red, 3))
-                                    {
-                                        g.DrawEllipse(pRed, relRodX + 5, bobberY - cropY - 5, 10, 10);
-                                    }
-                                }
-
-                                // Draw status text
-                                string statusTxt = shouldTap ? "TAPPING SPACE" : "HOLDING";
-                                Color statusColor = shouldTap ? Color.Red : Color.Lime;
-                                g.DrawString(statusTxt, new Font("Arial", 12, FontStyle.Bold), new SolidBrush(statusColor), 10, 10);
-                            }
-
-                            if (picDebug.Image != null) picDebug.Image.Dispose();
-                            picDebug.Image = (Bitmap)debugBmp.Clone();
-                        }
+                        Application.DoEvents();
+                        // 移除 Thread.Sleep(1)，追求極致速度
                     }
+
+                    ChangeState(FishingState.Reeling);
+                    stateTimer.Start();
                     break;
             }
         }
