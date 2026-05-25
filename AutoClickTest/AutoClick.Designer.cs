@@ -1,4 +1,7 @@
 
+using System.Drawing;
+using System.Windows.Forms;
+
 namespace AutoClickTest
 {
     partial class AutoClick
@@ -29,11 +32,11 @@ namespace AutoClickTest
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.Add = new System.Windows.Forms.Button();
             this.txtResult = new System.Windows.Forms.Label();
             this.lblLoopCount = new System.Windows.Forms.Label();
             this.numLoopCount = new System.Windows.Forms.NumericUpDown();
-            ((System.ComponentModel.ISupportInitialize)(this.numLoopCount)).BeginInit();
             this.Start = new System.Windows.Forms.Button();
             this.Stop = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
@@ -48,265 +51,83 @@ namespace AutoClickTest
             this.ActionListPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.Clear = new System.Windows.Forms.Button();
             this.ActionBlocksPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.SuspendLayout();
-            // 
-            // lblLoopCount
-            // 
-            this.lblLoopCount.AutoSize = true;
-            this.lblLoopCount.Location = new System.Drawing.Point(400, 565);
-            this.lblLoopCount.Name = "lblLoopCount";
-            this.lblLoopCount.Size = new System.Drawing.Size(125, 19);
-            this.lblLoopCount.TabIndex = 20;
-            this.lblLoopCount.Text = "執行次數 (0=無限):";
-            // 
-            // numLoopCount
-            // 
-            this.numLoopCount.Location = new System.Drawing.Point(530, 562);
-            this.numLoopCount.Name = "numLoopCount";
-            this.numLoopCount.Size = new System.Drawing.Size(80, 27);
-            this.numLoopCount.TabIndex = 21;
-            this.numLoopCount.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // Add
-            // 
-            this.Add.Location = new System.Drawing.Point(15, 15);
-            this.Add.Margin = new System.Windows.Forms.Padding(4);
-            this.Add.Name = "Add";
-            this.Add.Size = new System.Drawing.Size(96, 29);
-            this.Add.TabIndex = 0;
-            this.Add.Text = "增加動作";
-            this.Add.UseVisualStyleBackColor = true;
-            this.Add.Click += new System.EventHandler(this.AddAction);
-            // 
-            // txtResult
-            // 
-            this.txtResult.AutoSize = true;
-            this.txtResult.Location = new System.Drawing.Point(1200, 52);
-            this.txtResult.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.txtResult.Name = "txtResult";
-            this.txtResult.Size = new System.Drawing.Size(37, 19);
-            this.txtResult.TabIndex = 2;
-            this.txtResult.Text = "Test";
-            // 
-            // Start
-            // 
-            this.Start.Location = new System.Drawing.Point(516, 526);
-            this.Start.Margin = new System.Windows.Forms.Padding(4);
-            this.Start.Name = "Start";
-            this.Start.Size = new System.Drawing.Size(96, 29);
-            this.Start.TabIndex = 3;
-            this.Start.Text = "開始";
-            this.Start.UseVisualStyleBackColor = true;
-            this.Start.Click += new System.EventHandler(this.Start_Click);
-            // 
-            // Stop
-            // 
-            this.Stop.Location = new System.Drawing.Point(751, 526);
-            this.Stop.Margin = new System.Windows.Forms.Padding(4);
-            this.Stop.Name = "Stop";
-            this.Stop.Size = new System.Drawing.Size(96, 29);
-            this.Stop.TabIndex = 4;
-            this.Stop.Text = "停止";
-            this.Stop.UseVisualStyleBackColor = true;
-            this.Stop.Click += new System.EventHandler(this.Stop_Click);
-            // 
-            // btnRecord
-            // 
-            this.btnRecord.Location = new System.Drawing.Point(400, 526);
-            this.btnRecord.Margin = new System.Windows.Forms.Padding(4);
-            this.btnRecord.Name = "btnRecord";
-            this.btnRecord.Size = new System.Drawing.Size(96, 29);
-            this.btnRecord.TabIndex = 16;
-            this.btnRecord.Text = "🔴 錄製";
-            this.btnRecord.UseVisualStyleBackColor = true;
-            this.btnRecord.Click += new System.EventHandler(this.btnRecord_Click);
-            // 
-            // btnExport
-            // 
-            this.btnExport.Location = new System.Drawing.Point(860, 526);
-            this.btnExport.Margin = new System.Windows.Forms.Padding(4);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(96, 29);
-            this.btnExport.TabIndex = 14;
-            this.btnExport.Text = "匯出腳本";
-            this.btnExport.UseVisualStyleBackColor = true;
-            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
-            // 
-            // btnImport
-            // 
-            this.btnImport.Location = new System.Drawing.Point(970, 526);
-            this.btnImport.Margin = new System.Windows.Forms.Padding(4);
-            this.btnImport.Name = "btnImport";
-            this.btnImport.Size = new System.Drawing.Size(96, 29);
-            this.btnImport.TabIndex = 15;
-            this.btnImport.Text = "匯入腳本";
-            this.btnImport.UseVisualStyleBackColor = true;
-            this.btnImport.Click += new System.EventHandler(this.btnImport_Click);
-            // 
-            // Test
-            // 
-            this.Test.Location = new System.Drawing.Point(1200, 128);
-            this.Test.Margin = new System.Windows.Forms.Padding(4);
-            this.Test.Name = "Test";
-            this.Test.Size = new System.Drawing.Size(120, 29);
-            this.Test.TabIndex = 5;
-            this.Test.Text = "滑鼠座標測試";
-            this.Test.UseVisualStyleBackColor = true;
-            this.Test.Click += new System.EventHandler(this.Test_Click);
-            // 
-            // RightPanel
-            // 
-            this.RightPanel = new System.Windows.Forms.FlowLayoutPanel();
-            this.RightPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.RightPanel.WrapContents = false;
-            this.RightPanel.Name = "RightPanel";
-            this.RightPanel.Size = new System.Drawing.Size(220, 432);
-            this.RightPanel.AutoScroll = true;
-            this.RightPanel.Padding = new System.Windows.Forms.Padding(8);
-            this.RightPanel.Dock = System.Windows.Forms.DockStyle.Right;
-            // 
-            // MoveMouse
-            // 
-            this.MoveMouse.Location = new System.Drawing.Point(1200, 257);
-            this.MoveMouse.Margin = new System.Windows.Forms.Padding(4);
-            this.MoveMouse.Name = "MoveMouse";
-            this.MoveMouse.Size = new System.Drawing.Size(120, 29);
-            this.MoveMouse.TabIndex = 6;
-            this.MoveMouse.Text = "移動滑鼠座標";
-            this.MoveMouse.UseVisualStyleBackColor = true;
-            this.MoveMouse.Click += new System.EventHandler(this.MoveMouse_Click);
-            // 
-            // btnNavTest
-            // 
             this.btnNavTest = new System.Windows.Forms.Button();
-            this.btnNavTest.Name = "btnNavTest";
-            this.btnNavTest.Size = new System.Drawing.Size(200, 29);
-            this.btnNavTest.TabIndex = 21;
-            this.btnNavTest.Text = "導航方位測試";
-            this.btnNavTest.UseVisualStyleBackColor = true;
-            // 
-            // btnFishTest
-            // 
             this.btnFishTest = new System.Windows.Forms.Button();
-            this.btnFishTest.Name = "btnFishTest";
-            this.btnFishTest.Size = new System.Drawing.Size(200, 29);
-            this.btnFishTest.TabIndex = 22;
-            this.btnFishTest.Text = "方舟釣魚測試";
-            this.btnFishTest.UseVisualStyleBackColor = true;
-            // 
-            // PointY
-            // 
-            this.PointY.Location = new System.Drawing.Point(1250, 220);
-            this.PointY.Margin = new System.Windows.Forms.Padding(4);
-            this.PointY.Name = "PointY";
-            this.PointY.Size = new System.Drawing.Size(72, 27);
-            this.PointY.TabIndex = 7;
-            // 
-            // X
-            // 
-            this.X.AutoSize = true;
-            this.X.Location = new System.Drawing.Point(1200, 180);
-            this.X.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.X.Name = "X";
-            this.X.Size = new System.Drawing.Size(19, 19);
-            this.X.TabIndex = 8;
-            this.X.Text = "X";
-            // 
-            // Y
-            // 
-            this.Y.AutoSize = true;
-            this.Y.Location = new System.Drawing.Point(1200, 224);
-            this.Y.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.Y.Name = "Y";
-            this.Y.Size = new System.Drawing.Size(18, 19);
-            this.Y.TabIndex = 9;
-            this.Y.Text = "Y";
-            // 
-            // PointX
-            // 
-            this.PointX.Location = new System.Drawing.Point(1250, 176);
-            this.PointX.Margin = new System.Windows.Forms.Padding(4);
-            this.PointX.Name = "PointX";
-            this.PointX.Size = new System.Drawing.Size(72, 27);
-            this.PointX.TabIndex = 10;
-            // 
-            // ActionListPanel
-            // 
+            this.RightPanel = new System.Windows.Forms.FlowLayoutPanel();
+
+            ((System.ComponentModel.ISupportInitialize)(this.numLoopCount)).BeginInit();
+            this.SuspendLayout();
+
+            // 視窗主體
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1400, 720);
+            this.Name = "AutoClick";
+            this.Text = "AutoClick 腳本編輯器";
+
+            // 連結 Load 事件 (這是讓左側動作回來的關鍵)
+            this.Load += new System.EventHandler(this.AutoClick_Load);
+
+            // Add 按鈕
+            this.Add.Location = new System.Drawing.Point(15, 12);
+            this.Add.Size = new System.Drawing.Size(96, 29);
+            this.Add.Text = "增加動作";
+            this.Add.Click += new System.EventHandler(this.AddAction);
+
+            // ActionBlocksPanel (左側)
+            this.ActionBlocksPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.ActionBlocksPanel.Location = new System.Drawing.Point(15, 52);
+            this.ActionBlocksPanel.Size = new System.Drawing.Size(550, 432);
+            this.ActionBlocksPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.ActionBlocksPanel.WrapContents = false;
+            this.ActionBlocksPanel.AutoScroll = true;
+
+            // ActionListPanel (中間)
             this.ActionListPanel.AllowDrop = true;
             this.ActionListPanel.AutoScroll = true;
             this.ActionListPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ActionListPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.ActionListPanel.Location = new System.Drawing.Point(580, 52);
-            this.ActionListPanel.Name = "ActionListPanel";
-            this.ActionListPanel.Size = new System.Drawing.Size(600, 432);
-            this.ActionListPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ActionListPanel.TabIndex = 11;
+            this.ActionListPanel.Size = new System.Drawing.Size(580, 432);
+            this.ActionListPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.ActionListPanel.WrapContents = false;
             this.ActionListPanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.ActionList_DragDrop);
             this.ActionListPanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.ActionList_DragEnter);
-            // 
-            // Clear
-            // 
-            this.Clear.Location = new System.Drawing.Point(636, 526);
-            this.Clear.Name = "Clear";
-            this.Clear.Size = new System.Drawing.Size(94, 29);
-            this.Clear.TabIndex = 12;
-            this.Clear.Text = "清除";
-            this.Clear.UseVisualStyleBackColor = true;
-            this.Clear.Click += new System.EventHandler(this.Clear_Click);
-            // 
-            // ActionBlocksPanel
-            // 
-            this.ActionBlocksPanel.Location = new System.Drawing.Point(15, 52);
-            this.ActionBlocksPanel.Name = "ActionBlocksPanel";
-            this.ActionBlocksPanel.Size = new System.Drawing.Size(550, 432);
-            this.ActionBlocksPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)));
-            this.ActionBlocksPanel.TabIndex = 13;
-            this.ActionBlocksPanel.WrapContents = false;
-            this.ActionBlocksPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            // 
-            // AutoClick
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 19F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1350, 650);
-            this.MinimumSize = new System.Drawing.Size(1100, 650);
-            this.Controls.Add(this.ActionBlocksPanel);
-            this.Controls.Add(this.Clear);
-            this.Controls.Add(this.ActionListPanel);
-            this.Controls.Add(this.RightPanel);
-            // add right-side controls into RightPanel in desired order
-            this.RightPanel.Controls.Add(this.txtResult);
-            this.RightPanel.Controls.Add(this.Test);
-            this.RightPanel.Controls.Add(this.btnNavTest);
-            this.RightPanel.Controls.Add(this.MoveMouse);
-            this.RightPanel.Controls.Add(this.btnFishTest);
-            this.RightPanel.Controls.Add(this.X);
-            this.RightPanel.Controls.Add(this.PointX);
-            this.RightPanel.Controls.Add(this.Y);
-            this.RightPanel.Controls.Add(this.PointY);
-            this.Controls.Add(this.Stop);
-            this.Controls.Add(this.btnRecord);
-            this.Controls.Add(this.Start);
-            this.Controls.Add(this.btnExport);
-            this.Controls.Add(this.btnImport);
 
-            this.Controls.Add(this.lblLoopCount);
-            this.Controls.Add(this.numLoopCount);
-            this.Controls.Add(this.Add);
-            this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "AutoClick";
-            this.Text = "AutoClick";
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Load += new System.EventHandler(this.AutoClick_Load);
+            // RightPanel (右側)
+            this.RightPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.RightPanel.Location = new System.Drawing.Point(1175, 52);
+            this.RightPanel.Size = new System.Drawing.Size(200, 432);
+            this.RightPanel.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.RightPanel.WrapContents = false;
+            this.RightPanel.Padding = new Padding(10);
+
+            // 右側按鈕與座標
+            this.Test.Text = "滑鼠座標測試"; this.Test.Size = new Size(170, 30); this.Test.Click += Test_Click;
+            this.btnNavTest.Text = "導航方位測試"; this.btnNavTest.Size = new Size(170, 30);
+            this.MoveMouse.Text = "移動滑鼠座標"; this.MoveMouse.Size = new Size(170, 30); this.MoveMouse.Click += MoveMouse_Click;
+            this.btnFishTest.Text = "方舟釣魚測試"; this.btnFishTest.Size = new Size(170, 30);
+            this.X.Text = "X:"; this.Y.Text = "Y:"; this.PointX.Size = new Size(70, 25); this.PointY.Size = new Size(70, 25);
+            this.txtResult.Text = "座標資訊";
+            this.RightPanel.Controls.AddRange(new Control[] { this.Test, this.btnNavTest, this.MoveMouse, this.btnFishTest, this.X, this.PointX, this.Y, this.PointY, this.txtResult });
+
+            // 底部按鈕
+            int footerY = 510;
+            this.btnRecord.Text = "🔴 錄製"; this.btnRecord.Location = new Point(15, footerY); this.btnRecord.Size = new Size(100, 35); this.btnRecord.Click += btnRecord_Click;
+            this.Start.Text = "開始執行"; this.Start.Location = new Point(125, footerY); this.Start.Size = new Size(100, 35); this.Start.Click += Start_Click;
+            this.Clear.Text = "清除清單"; this.Clear.Location = new Point(235, footerY); this.Clear.Size = new Size(100, 35); this.Clear.Click += Clear_Click;
+            this.Stop.Text = "停止執行"; this.Stop.Location = new Point(345, footerY); this.Stop.Size = new Size(100, 35); this.Stop.Click += Stop_Click;
+            this.btnExport.Text = "匯出腳本"; this.btnExport.Location = new Point(455, footerY); this.btnExport.Size = new Size(100, 35); this.btnExport.Click += btnExport_Click;
+            this.btnImport.Text = "匯入腳本"; this.btnImport.Location = new Point(565, footerY); this.btnImport.Size = new Size(100, 35); this.btnImport.Click += btnImport_Click;
+
+            this.lblLoopCount.Text = "重複次數 (0=無限):"; this.lblLoopCount.Location = new Point(15, footerY + 50); this.lblLoopCount.AutoSize = true;
+            this.numLoopCount.Location = new Point(150, footerY + 48); this.numLoopCount.Size = new Size(80, 25);
+
+            // 加入控制項
+            this.Controls.AddRange(new Control[] { this.ActionBlocksPanel, this.ActionListPanel, this.RightPanel, this.Add, this.btnRecord, this.Start, this.Clear, this.Stop, this.btnExport, this.btnImport, this.lblLoopCount, this.numLoopCount });
+
             ((System.ComponentModel.ISupportInitialize)(this.numLoopCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
-
         }
 
         #endregion
