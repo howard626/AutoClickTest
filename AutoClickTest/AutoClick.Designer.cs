@@ -31,6 +31,9 @@ namespace AutoClickTest
         {
             this.Add = new System.Windows.Forms.Button();
             this.txtResult = new System.Windows.Forms.Label();
+            this.lblLoopCount = new System.Windows.Forms.Label();
+            this.numLoopCount = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)(this.numLoopCount)).BeginInit();
             this.Start = new System.Windows.Forms.Button();
             this.Stop = new System.Windows.Forms.Button();
             this.btnRecord = new System.Windows.Forms.Button();
@@ -46,6 +49,23 @@ namespace AutoClickTest
             this.Clear = new System.Windows.Forms.Button();
             this.ActionBlocksPanel = new System.Windows.Forms.FlowLayoutPanel();
             this.SuspendLayout();
+            // 
+            // lblLoopCount
+            // 
+            this.lblLoopCount.AutoSize = true;
+            this.lblLoopCount.Location = new System.Drawing.Point(400, 565);
+            this.lblLoopCount.Name = "lblLoopCount";
+            this.lblLoopCount.Size = new System.Drawing.Size(125, 19);
+            this.lblLoopCount.TabIndex = 20;
+            this.lblLoopCount.Text = "執行次數 (0=無限):";
+            // 
+            // numLoopCount
+            // 
+            this.numLoopCount.Location = new System.Drawing.Point(530, 562);
+            this.numLoopCount.Name = "numLoopCount";
+            this.numLoopCount.Size = new System.Drawing.Size(80, 27);
+            this.numLoopCount.TabIndex = 21;
+            this.numLoopCount.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
             // Add
             // 
@@ -234,11 +254,16 @@ namespace AutoClickTest
             this.Controls.Add(this.btnExport);
             this.Controls.Add(this.btnImport);
             this.Controls.Add(this.txtResult);
+            this.Controls.Add(this.lblLoopCount);
+            this.Controls.Add(this.numLoopCount);
             this.Controls.Add(this.Add);
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "AutoClick";
             this.Text = "AutoClick";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Load += new System.EventHandler(this.AutoClick_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.numLoopCount)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -248,6 +273,8 @@ namespace AutoClickTest
 
         private System.Windows.Forms.Button Add;
         private System.Windows.Forms.Label txtResult;
+        private System.Windows.Forms.Label lblLoopCount;
+        private System.Windows.Forms.NumericUpDown numLoopCount;
         private System.Windows.Forms.Button Start;
         private System.Windows.Forms.Button Stop;
         private System.Windows.Forms.Button btnRecord;

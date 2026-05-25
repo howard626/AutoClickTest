@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AutoClickTest
@@ -11,57 +8,53 @@ namespace AutoClickTest
     public static class Keybord
     {
         [DllImport("user32.dll", EntryPoint = "keybd_event", SetLastError = true)]
-        public static extern void keybd_event(
-            byte bVk,    //虛擬鍵值
-            byte bScan,// 一般爲0
-            int dwFlags,  //這裏是整數類型  0 爲按下，2爲釋放
-            int dwExtraInfo  //這裏是整數類型 一般情況下設成爲 0
-        );
+        private static extern void keybd_event(byte bVk, byte bScan, int dwFlags, int dwExtraInfo);
 
-        private enum KeyEvent
-        {
-            按下 = 0,
-            放開 = 2
-        }
-
-        /// <summary>
-        /// 鍵盤輸入事件-按一下
-        /// </summary>
-        /// <param name="key">組合鍵</param>
-        /// <remarks>
-        /// + = shift
-        /// ^ = ctrl
-        /// % = alt
-        /// </remarks>
-        public static void Press(string key)
-        {
-            SendKeys.Send($"{{{key.ToUpper()}}}");
-        }
-
-        /// <summary>
-        /// 鍵盤按住事件
-        /// </summary>
-        /// <param name="key">鍵值</param>
-        /// <param name="ms">按住毫秒</param>
         [DllImport("user32.dll")]
-        static extern uint MapVirtualKey(uint uCode, uint uMapType);
+        private static extern uint MapVirtualKey(uint uCode, uint uMapType);
 
-        public static void Hold(string key, int ms)
+        private const int KEYEVENTF_KEYDOWN  = 0x0000;
+        private const int KEYEVENTF_KEYUP    = 0x0002;
+        private const int KEYEVENTF_SCANCODE = 0x0008;
+
+        /// <summary>按一下（按下 + 放開）</summary>
+        public static void Press(string keyName)
         {
-            if (Enum.TryParse(key, true, out Keys virtualKey))
-            {
-                byte vk = (byte)virtualKey;
-                byte scanCode = (byte)MapVirtualKey(vk, 0); // MAPVK_VK_TO_VSC
+            if (!Enum.TryParse(keyName, true, out Keys key)) return;
+            byte vk = (byte)key;
+            byte scan = (byte)MapVirtualKey(vk, 0);
+            keybd_event(vk, scan, KEYEVENTF_KEYDOWN | KEYEVENTF_SCANCODE, 0);
+            Thread.Sleep(20);
+            keybd_event(vk, scan, KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE, 0);
+        }
 
-                // 按下 (加入 0x0008 代表 KEYEVENTF_SCANCODE)
-                keybd_event(vk, scanCode, (int)KeyEvent.按下 | 0x0008, 0);
-                
-                // 等待
-                Thread.Sleep(ms);
+        /// <summary>只按下（不放開），用於組合鍵</summary>
+        public static void PressDown(string keyName)
+        {
+            if (!Enum.TryParse(keyName, true, out Keys key)) return;
+            byte vk = (byte)key;
+            byte scan = (byte)MapVirtualKey(vk, 0);
+            keybd_event(vk, scan, KEYEVENTF_KEYDOWN | KEYEVENTF_SCANCODE, 0);
+        }
 
-                // 放開 (0x0002 | 0x0008)
-                keybd_event(vk, scanCode, (int)KeyEvent.放開 | 0x0008, 0);
-            }
+        /// <summary>只放開，用於組合鍵</summary>
+        public static void PressUp(string keyName)
+        {
+            if (!Enum.TryParse(keyName, true, out Keys key)) return;
+            byte vk = (byte)key;
+            byte scan = (byte)MapVirtualKey(vk, 0);
+            keybd_event(vk, scan, KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE, 0);
+        }
+
+        /// <summary>按住指定毫秒後放開</summary>
+        public static void Hold(string keyName, int ms)
+        {
+            if (!Enum.TryParse(keyName, true, out Keys key)) return;
+            byte vk = (byte)key;
+            byte scan = (byte)MapVirtualKey(vk, 0);
+            keybd_event(vk, scan, KEYEVENTF_KEYDOWN | KEYEVENTF_SCANCODE, 0);
+            Thread.Sleep(ms);
+            keybd_event(vk, scan, KEYEVENTF_KEYUP | KEYEVENTF_SCANCODE, 0);
         }
     }
 }

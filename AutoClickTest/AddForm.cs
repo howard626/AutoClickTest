@@ -20,6 +20,7 @@ namespace AutoClickTest
             Ok.DialogResult = DialogResult.OK;
             Cancel.DialogResult = DialogResult.Cancel;
             Init();
+            Delay.Text = "500";
         }
 
         /// <summary>
@@ -34,6 +35,7 @@ namespace AutoClickTest
             Action = action;
             Tool.Text = "滑鼠";
             ActionName.Text = Action.Action_Desc;
+            Delay.Text = action.Delay_MS.ToString();
             switch (Action.Action_Desc)
             {
                 case "點一下左鍵":
@@ -65,6 +67,7 @@ namespace AutoClickTest
             Tool.Text = "鍵盤";
             ActionName.Text = Action.Action_Desc;
             KeyCode.Text = action.KeyCode;
+            Delay.Text = action.Delay_MS.ToString();
             if (Action.Action_Desc == "按住")
             {
                 HoldDuration.Text = action.Hold_MS.ToString();
@@ -86,6 +89,7 @@ namespace AutoClickTest
             Action = action;
             Tool.Text = "圖案比對";
             ActionName.Text = "圖案比對";
+            Delay.Text = action.Delay_MS.ToString();
         }
 
 
@@ -167,6 +171,10 @@ namespace AutoClickTest
                     KeyCode = KeyCode.Text,
                     Hold_MS = ActionName.Text == "按住" ? Int32.Parse(CheckStringToInt(HoldDuration.Text)) : 0
                 };
+            }
+            else if (Action is ImageAction img)
+            {
+                img.Delay_MS = Int32.Parse(CheckStringToInt(Delay.Text));
             }
             else {
                 switch (ActionName.Text)

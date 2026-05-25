@@ -1,0 +1,443 @@
+[
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 999,
+    "Y": 1047,
+    "ID": 34,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 1230
+  },
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 997,
+    "Y": 1048,
+    "ID": 35,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 33
+  },
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 1064,
+    "Y": 727,
+    "ID": 36,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 1066
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Return",
+    "Hold_MS": 0,
+    "ID": 37,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 749
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Return",
+    "Hold_MS": 0,
+    "ID": 38,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 111
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "S",
+    "Hold_MS": 0,
+    "ID": 39,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 66
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Back",
+    "Hold_MS": 0,
+    "ID": 40,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 446
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "LShiftKey",
+    "Hold_MS": 0,
+    "ID": 41,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 236
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "V",
+    "Hold_MS": 0,
+    "ID": 42,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 1662
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "U",
+    "Hold_MS": 0,
+    "ID": 43,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 70
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Oem1",
+    "Hold_MS": 0,
+    "ID": 44,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D3",
+    "Hold_MS": 0,
+    "ID": 45,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 30
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "U",
+    "Hold_MS": 0,
+    "ID": 46,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 94
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "L",
+    "Hold_MS": 0,
+    "ID": 47,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D4",
+    "Hold_MS": 0,
+    "ID": 48,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "G",
+    "Hold_MS": 0,
+    "ID": 49,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 1146
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "K",
+    "Hold_MS": 0,
+    "ID": 50,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 40
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D6",
+    "Hold_MS": 0,
+    "ID": 51,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 220
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "A",
+    "Hold_MS": 0,
+    "ID": 52,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 156
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "K",
+    "Hold_MS": 0,
+    "ID": 53,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 32
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D7",
+    "Hold_MS": 0,
+    "ID": 54,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 161
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "S",
+    "Hold_MS": 0,
+    "ID": 55,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 81
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "K",
+    "Hold_MS": 0,
+    "ID": 56,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 48
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D7",
+    "Hold_MS": 0,
+    "ID": 57,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 162
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Return",
+    "Hold_MS": 0,
+    "ID": 58,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 877
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "RShiftKey",
+    "Hold_MS": 205,
+    "ID": 59,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 756
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "OemQuestion",
+    "Hold_MS": 0,
+    "ID": 60,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Space",
+    "Hold_MS": 0,
+    "ID": 61,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 1613
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "LShiftKey",
+    "Hold_MS": 1449,
+    "ID": 62,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 1536
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "I",
+    "Hold_MS": 0,
+    "ID": 63,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Space",
+    "Hold_MS": 0,
+    "ID": 64,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 786
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "LShiftKey",
+    "Hold_MS": 846,
+    "ID": 65,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 1046
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D",
+    "Hold_MS": 0,
+    "ID": 66,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "O",
+    "Hold_MS": 0,
+    "ID": 67,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 69
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "N",
+    "Hold_MS": 0,
+    "ID": 68,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "T",
+    "Hold_MS": 0,
+    "ID": 69,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 84
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Space",
+    "Hold_MS": 0,
+    "ID": 70,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 596
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "LShiftKey",
+    "Hold_MS": 620,
+    "ID": 71,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按住",
+    "Delay_MS": 811
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "K",
+    "Hold_MS": 0,
+    "ID": 72,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 0
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "N",
+    "Hold_MS": 0,
+    "ID": 73,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 116
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "O",
+    "Hold_MS": 0,
+    "ID": 74,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 547
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "W",
+    "Hold_MS": 0,
+    "ID": 75,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 66
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "Space",
+    "Hold_MS": 0,
+    "ID": 76,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 1576
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "LShiftKey",
+    "Hold_MS": 0,
+    "ID": 77,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 199
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "I",
+    "Hold_MS": 0,
+    "ID": 78,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 1167
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "D",
+    "Hold_MS": 0,
+    "ID": 79,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 721
+  },
+  {
+    "$type": "AutoClickTest.KeyCodeAction, AutoClickTest",
+    "KeyCode": "K",
+    "Hold_MS": 0,
+    "ID": 80,
+    "Tool_Name": "鍵盤",
+    "Action_Desc": "按一下",
+    "Delay_MS": 206
+  },
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 1484,
+    "Y": 1046,
+    "ID": 81,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 1980
+  },
+  {
+    "$type": "AutoClickTest.MouseAction, AutoClickTest",
+    "X": 621,
+    "Y": 745,
+    "ID": 82,
+    "Tool_Name": "滑鼠",
+    "Action_Desc": "點一下左鍵",
+    "Delay_MS": 1030
+  }
+]
