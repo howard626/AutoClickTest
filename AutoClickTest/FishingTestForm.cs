@@ -409,6 +409,7 @@ namespace AutoClickTest
                                 {
                                     isNetReady = true;
                                 }
+                                Log($"灑網判定... (驚嘆號: {netSim:F2})");
                             }
                         }
 
@@ -459,10 +460,10 @@ namespace AutoClickTest
 
                     double elapsedWaitMs = (DateTime.Now - lastStateChange).TotalMilliseconds;
 
-                    // 強制等待 1.5 秒的拋竿/灑網動畫，這段期間內不做任何影像辨識，避免因為動畫特效導致誤判！
-                    if (elapsedWaitMs < 1500)
+                    // 強制等待 2.5 秒的拋竿/灑網動畫，這段期間內不做任何影像辨識，避免因為動畫特效導致誤判！
+                    if (elapsedWaitMs < 2500)
                     {
-                        Log($"等待動畫播完... ({(1500 - elapsedWaitMs) / 1000.0:F1}s)");
+                        Log($"等待動畫播完... ({(2500 - elapsedWaitMs) / 1000.0:F1}s)");
                         return;
                     }
 
@@ -485,7 +486,7 @@ namespace AutoClickTest
                         if (spaceSim > maxSpaceSimSeen) maxSpaceSimSeen = spaceSim;
                         
                         // 門檻恢復回 0.80，避免在小遊戲還沒跳出來之前，誤把白色的衣服或地板當成空白鍵！
-                        if (spaceLoc.HasValue && spaceSim > 0.45)
+                        if (spaceLoc.HasValue && spaceSim > 0.65)
                         {
                             Log($"偵測到灑網小遊戲出現！(相似度: {spaceSim:F2})");
                             ChangeState(FishingState.Minigame);
